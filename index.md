@@ -1,5 +1,5 @@
 ---
-title: /
+title: /home
 layout: home
 permalink: /
 ---
@@ -9,5 +9,4 @@ permalink: /
 [Dark](https://b2a3e8.github.io/jekyll-theme-console-demo-dark/)
 [Hacker](https://b2a3e8.github.io/jekyll-theme-console-demo-hacker/)
 
-I'm a curious kid obsessed with technology and startups.
-
+I am a curious kid obsessed with technology and startups. With a background in traditional business major, I previously worked in management consulting and venture capital, and I love to learn about how businesses are created and aim to share those learnings here.
