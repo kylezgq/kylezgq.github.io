@@ -7,6 +7,5 @@ permalink: /about
 
 # About
 
-LinkedIn:
+[LinkedIn](https://www.linkedin.com/in/guoqiang-kyle-zhang/)
 
-...
