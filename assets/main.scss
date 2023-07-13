@@ -5,6 +5,6 @@
 @import "light";
 @import "base";
 
-@media (prefers-color-scheme: dark) {
-	@import "dark";
+@media (prefers-color-scheme: light) {
+	@import "light";
 }
