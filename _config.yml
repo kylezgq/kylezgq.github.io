@@ -4,6 +4,7 @@ url: "https://kylezgq.github.io"
 
 
 header_pages:
+  - index.md
   - about.md
   - categories.md
   - contacts.md
