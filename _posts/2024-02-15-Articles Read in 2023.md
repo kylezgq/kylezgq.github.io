@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Articles Read in 2023"
+title: "2023 年读过的 56 篇好文章"
 date: 2024-02-15
 categories: Generative AI
 ---
