@@ -11,6 +11,6 @@ permalink: /contacts
 
 WeChat: kylezgq
 
-即刻：KyleCheung
+即刻：kylezgq
 
 Email: kylezgq@gmail.com
