@@ -1,0 +1,49 @@
+title: Kyle Cheung
+email: kylezgq@gmail.com
+url: https://kylezgq.github.io/
+baseurl: ""
+description: mostly on tech, startups, and self-growth
+github_username: kylezgq
+
+permalink: /:slug.html
+
+favicon: "logo.png"
+goat_counter: "kylezgq"
+
+remote_theme: riggraz/no-style-please
+
+theme_config:
+  appearance: "auto"
+  back_home_text: "back"
+  date_format: "%Y-%m-%d"
+  show_description: false 
+
+sass:
+  style: :compressed
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+include:
+  - _pages
+
+# Exclude from processing.
+# The following items will not be processed, by default.
+# Any item listed under the `exclude:` key here will be automatically added to
+# the internal "default list".
+#
+# Excluded items can be processed by explicitly listing the directories or
+# their entries' file path in the `include:` list.
+#
+# exclude:
+#   - .sass-cache/
+#   - .jekyll-cache/
+#   - gemfiles/
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules/
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/
