@@ -1,0 +1,13 @@
+entries:
+  - title: info
+    entries:
+      - title: tbd...
+      - title: linkedin
+        url: https://www.linkedin.com/in/kylezgq/
+
+  - title: my thoughts
+    post_list:
+      limit: 5
+      show_more: true
+      show_more_text: See archive...
+      show_more_url: archive.html
