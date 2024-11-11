@@ -5,7 +5,7 @@ entries:
       - title: linkedin
         url: https://www.linkedin.com/in/kylezgq/
 
-  - title: all posts
+  - title: my thoughts
     post_list:
       limit: 5
       show_more: true 
