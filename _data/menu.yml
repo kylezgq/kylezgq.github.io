@@ -1,9 +1,15 @@
+I'm an investor, entrepreneur, developer.
+
+Some things about me
+
 entries:
   - title: info
     entries:
       - title: tbd...
       - title: linkedin
         url: https://www.linkedin.com/in/kylezgq/
+      - title: my book shelf
+        url: https://www.goodreads.com/review/list/175571315
 
   - title: my thoughts
     post_list:
@@ -12,6 +18,3 @@ entries:
       show_more_text: See archive...
       show_more_url: archive.html
 
-<a href="https://www.twitter.com/kylezgq">
-<img alt="Follow kylezgq on Twitter" src="http://twitter-badges.s3.amazonaws.com/follow_me-a.png" />
-</a>
