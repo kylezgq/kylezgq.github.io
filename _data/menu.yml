@@ -1,4 +1,8 @@
 entries:
+  - title: this page is the most up to date list of what I’m working on, thinking about and doing right now
+  - title: the /now movement inspired by @Sivers
+
+entries:
   - title: life
     entries:
       - title: grew up in a northern coastal city
@@ -30,7 +34,7 @@ entries:
 entries:
   - title: best way to connect
     entries:
-      - title: "for quick stuff, say hi on <a href='https://peaceful-squirrel-5cac5f.netlify.app/'>WeChat</a>"
+      - title: for quick stuff, say hi on "<a href='https://peaceful-squirrel-5cac5f.netlify.app/'>WeChat</a>"
       - title: for longer things or to schedule something, email is best: hi at this-domain
 
 entries:
