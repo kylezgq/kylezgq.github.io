@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem 'riggraz/no-style-please'
+gem 'no-style-please'
 
 gem "github-pages"
 
