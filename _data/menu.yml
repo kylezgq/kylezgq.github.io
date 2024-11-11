@@ -1,8 +1,8 @@
 entries:
   - title: this page is the most up to date list of what I’m working on, thinking about and doing right now
-  - title: the /now movement inspired by @Sivers
+    entries:
+      - title: the /now movement inspired by @Sivers
 
-entries:
   - title: life
     entries:
       - title: grew up in a northern coastal city
@@ -10,7 +10,6 @@ entries:
       - title: occasionally pop up in Beijing, Shenzhen, Hangzhou, Singapore or The Valley
       - title: having three cats
 
-entries:
   - title: work
     entries:
       - title: first participated in the Bain Cup, a consulting case competition, where compelling slides sparked my interest in consulting industry
@@ -20,7 +19,6 @@ entries:
       - title: joined 42章经 in summer 2023 for a six-month internship, learning from the top AI founders, investors and colleagues
       - title: now focused on global software, innovative opportunities in LLM & RL, and bootstrapped products by indie makers in niche markets
 
-entries:
   - title: things i like to geek out on
     entries:
       - title: writing, reading, and prototyping
@@ -30,14 +28,12 @@ entries:
       - title: whisky & cocktail
       - title: soccer, former school team player
       - title: texas hold’em.
-      
-entries:
+
   - title: best way to connect
     entries:
       - title: for quick stuff, say hi on WeChat
       - title: for longer things or to schedule something, email is best: hi at this-domain
 
-entries:
   - title: info
     entries:
       - title: twitter
@@ -49,7 +45,6 @@ entries:
       - title: Jike
         url: https://okjk.co/m9u3Ox
 
-entries:
   - title: my thoughts
     post_list:
       limit: 5
