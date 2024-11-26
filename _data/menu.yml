@@ -30,7 +30,27 @@ entries:
 
   - title: some things i believe
     entries:
-      - title: tbd...
+      - title: most careers turn into sales jobs when you get senior enough
+      - title: if you loved your work, you’d work on Sundays
+        entries: 
+          - title: not to equate work with a job
+          - title: to be driven by curiosity rather than careerism, to give free rein to your curiosity instead of working on what you're supposed to
+      - title: different is better than better
+        entries: 
+          - title: if you do what everyone else does, you’ll get the same results everyone else gets
+          - title: best practices aren’t always the best, by definition, they’re average
+      - title: ideas are dead ends, curiosity is a through street
+        entries: 
+          - title: you can copy ideas but you can’t copy curiosity
+      - title: 10x is easier than 2x
+        entries: 
+          - title: one of the best ways to get unstuck from a problem is to imagine something an order of magnitude bigger, where you can't do the current process to do it
+          - title: it doesn’t to say you have to hit a 10x goal, its more the exercise of what would it take to be 10x bigger or do something 10 times better
+          - title: to think differently about the problem means you have to more deeply understand the problem
+          - title: we might call this first principle thinking
+      - title: intellectual honesty
+        entries: 
+          - title: the best praise about Bill Gurley i’ve ever heard was from Peter Fenton, the degree to which truth comes ahead of ego or self for him
   
   - title: best way to connect
     entries:
