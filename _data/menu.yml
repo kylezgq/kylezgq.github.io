@@ -3,19 +3,19 @@ entries:
   
   - title: life
     entries:
-      - title: grew up in a northern coastal city in mainland China
-      - title: graduating in 2024, perfectly missed out on the golden decade of the PC, mobile internet, and the venture capital boom
-      - title: occasionally pop up in Beijing, Shenzhen, Hangzhou, Singapore or The Valley
+      - title: grew up in a northern coastal city in mainland china
+      - title: graduating in 2024, perfectly missed out on the golden decade of the pc, mobile internet, and the venture capital boom
+      - title: occasionally pop up in beijing, shanghai, singapore or the valley
       - title: having three cats
 
   - title: work
     entries:
-      - title: first participated in the Bain Cup, a consulting case competition, where compelling slides sparked my interest in consulting industry
-      - title: interned at Roland Berger for six months, a challenging but rewarding journey into the management consulting
+      - title: first participated in the bain consulting case competition, where compelling slides sparked my interest in consulting industry
+      - title: interned at roland berger for six months, a challenging but rewarding journey into the management consulting
       - title: did some research on web3, the so-called next generation of the internet, then joined an internet giant from web1 for a three-month internship, worked on web2 & web3 strategic investments
-      - title: pivoted my research to generative ai following the release of gpt-3.5 in November 2022, and soon after, i joined a VC internship
-      - title: joined 42 Capital in summer 2023 for a six-month internship, learning from the top AI founders, investors and colleagues
-      - title: now focused on global software, innovative opportunities in LLM & RL, and bootstrapped startups by indie makers in niche markets
+      - title: pivoted my research to generative ai following the release of gpt-3.5 in november 2022, and soon after, i joined a vc internship
+      - title: joined 42 Capital in summer 2023 for a six-month internship, learning from the top ai founders, investors and colleagues
+      - title: now focused on global software, innovative opportunities in llm & rl, and bootstrapped startups by indie makers in niche markets
       - title: i also always <a href='archive.html'>blog</a>, mostly on tech, startups, and self-growth
 
   - title: things i like to geek out on
@@ -51,7 +51,7 @@ entries:
           - title: we might call this first principle thinking
       - title: intellectual honesty
         entries: 
-          - title: the best praise i've ever heard about someone was from Peter Fenton's remark about Bill Gurley, the degree to which truth comes ahead of ego or self for him
+          - title: the best praise i've ever heard about someone was from peter fenton's remark about bill gurley, the degree to which truth comes ahead of ego or self for him
   
   - title: best way to connect
     entries:
@@ -66,5 +66,5 @@ entries:
         url: https://www.linkedin.com/in/kylezgq/
       - title: my book shelf
         url: https://www.goodreads.com/review/list/175571315
-      - title: Jike
+      - title: jike
         url: https://okjk.co/m9u3Ox
