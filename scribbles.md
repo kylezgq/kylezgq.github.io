@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Scribbles
+title: scribbles
 ---
 
 {% include post_list.html category="scribbles" %}
