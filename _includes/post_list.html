@@ -16,9 +16,9 @@
         <li>
           <span>{{- post.date | date: site.theme_config.date_format -}}</span>
           <a href="{{ post.url | relative_url }}">{{ post.title | downcase }}</a>
-          {%- assign excerpt_text = post.excerpt | strip_html | strip_newlines | truncate: 80 -%}
-          {%- if excerpt_text.size > 0 -%}
-            <ul style="margin-top:0.3rem; list-style-type:'› '; padding-left:1.5rem;">
+          {%- assign excerpt_text = post.content | strip_html | replace: '\n', ' ' | truncate: 100, '' -%}
+          {%- if excerpt_text.size > 10 -%}
+            <ul style="margin-top:0.3rem; margin-bottom:0.5rem; list-style-type: circle; padding-left:1.5rem;">
               <li style="color:#999; font-size:16px;">{{ excerpt_text }}...</li>
             </ul>
           {%- endif -%}
