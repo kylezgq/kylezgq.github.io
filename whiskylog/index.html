@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whisky Log - 威士忌品鉴记录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            padding: 40px 200px;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 28px;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 40px;
+        }
+        h2 {
+            margin: 50px 0 20px;
+            color: #333;
+            font-size: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+            background: #ffffff;
+            border: 1px solid #000;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            background-color: #ffffff;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 10px 12px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        /* 第一行 - 深灰色 */
+        thead tr:first-child th,
+        tr:first-child th {
+            background-color: #4a4a4a;
+            color: #fff;
+            font-weight: 600;
+            white-space: nowrap;
+            min-width: 140px;
+        }
+        tr:first-child th .distillery-name {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+        tr:first-child th .distillery-cn {
+            display: block;
+            font-size: 12px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+        /* 第一行酒厂链接样式 */
+        tr:first-child th a {
+            color: #fff;
+            text-decoration: none;
+        }
+        tr:first-child th a:hover {
+            text-decoration: underline;
+        }
+        /* 第一列产区链接样式 */
+        tr td:first-child a {
+            color: #fff;
+            text-decoration: none;
+        }
+        tr td:first-child a:hover {
+            text-decoration: underline;
+        }
+        /* 第一列 - 深灰色（与第一行相同） */
+        tr td:first-child,
+        tr th:first-child {
+            background-color: #4a4a4a !important;
+            color: #fff;
+            font-weight: 600;
+            width: 90px;
+            min-width: 90px;
+            white-space: nowrap;
+        }
+        /* 第一列第一行单元格 - 斜线分割 */
+        th.corner-cell {
+            position: relative;
+            width: 100px;
+            height: 50px;
+            background-color: #4a4a4a;
+            overflow: hidden;
+        }
+        th.corner-cell .diag-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom right, transparent 49.7%, #fff 49.7%, #fff 50.3%, transparent 50.3%);
+        }
+        th.corner-cell .distillery-label {
+            position: absolute;
+            top: 6px;
+            left: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        th.corner-cell .region-label {
+            position: absolute;
+            bottom: 6px;
+            right: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        /* 第二行 - 浅灰色（第一列除外） */
+        tr:nth-child(2) td:not(:first-child) {
+            background-color: #d0d0d0;
+            color: #333;
+            font-size: 12px;
+        }
+        /* 其余单元格 - 白色（第一列除外） */
+        tbody tr td:not(:first-child),
+        tr:nth-child(n+3) td:not(:first-child) {
+            background-color: #ffffff;
+            color: #333;
+        }
+        /* 酒款列表 */
+        .whisky-list {
+            margin: 0;
+            padding-left: 16px;
+            text-align: left;
+        }
+        .whisky-list li {
+            margin: 6px 0;
+            padding: 2px 0;
+            line-height: 1.5;
+        }
+        .award {
+            color: #c62828;
+            font-weight: bold;
+        }
+        .distillery-name {
+            font-weight: 600;
+        }
+        .distillery-cn {
+            font-weight: normal;
+            opacity: 0.8;
+        }
+        .summary {
+            margin-top: 50px;
+            padding: 30px;
+            background: #ffffff;
+            border: 1px solid #000;
+        }
+        .summary h2 {
+            margin-top: 0;
+            border-bottom: 2px solid #333;
+        }
+        .summary-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .summary-table th,
+        .summary-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #000;
+        }
+        .summary-table th {
+            background-color: #4a4a4a;
+            color: #fff;
+        }
+        .summary-table tr:nth-child(even) td {
+            background-color: #f5f5f5;
+        }
+        .summary-table tr:nth-child(odd) td {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Whisky Log - 威士忌品鉴记录</h1>
+    <p class="subtitle">"Whisky is liquid sunshine." — Winston Churchill</p>
+
+    <h2>苏格兰威士忌</h2>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
+                <th><a href="https://en.wikipedia.org/wiki/Aberlour_distillery">Aberlour<br><span class="distillery-cn">亚伯乐</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Ardbeg_distillery">Ardbeg<br><span class="distillery-cn">阿贝</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Arran_distillery">Arran<br><span class="distillery-cn">艾伦</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Balvenie_distillery">Balvenie<br><span class="distillery-cn">百富</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Bowmore_distillery">Bowmore<br><span class="distillery-cn">波摩</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Brora_distillery">Brora<br><span class="distillery-cn">大猫</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Bruichladdich_distillery">Bruichladdich<br><span class="distillery-cn">布赫拉迪</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Caol_Ila_distillery">Caol Ila<br><span class="distillery-cn">卡尔里拉</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Clynelish_distillery">Clynelish<br><span class="distillery-cn">小猫</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Dalmore_distillery">Dalmore<br><span class="distillery-cn">大摩</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Deanston_distillery">Deanston<br><span class="distillery-cn">汀斯顿</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Edradour_distillery">Edradour<br><span class="distillery-cn">埃德拉多尔</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/GlenAllachie_distillery">GlenAllachie<br><span class="distillery-cn">格兰纳里奇</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Glenfarclas_distillery">Glenfarclas<br><span class="distillery-cn">格兰花格</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Glenfiddich_distillery">Glenfiddich<br><span class="distillery-cn">格兰菲迪</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Glendronach_distillery">Glendronach<br><span class="distillery-cn">格兰多纳</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Glenlivet_distillery">Glenlivet<br><span class="distillery-cn">格兰威特</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Glenmorangie_distillery">Glenmorangie<br><span class="distillery-cn">格兰杰</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Highland_Park_distillery">Highland Park<br><span class="distillery-cn">高原骑士</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Jura_distillery">Jura<br><span class="distillery-cn">吉拉</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Lagavulin_distillery">Lagavulin<br><span class="distillery-cn">乐加维林</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Laphroaig_distillery">Laphroaig<br><span class="distillery-cn">拉弗格</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Macallan_distillery">Macallan<br><span class="distillery-cn">麦卡伦</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Monkey_Shoulder">Monkey Shoulder<br><span class="distillery-cn">三只猴子</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Mortlach_distillery">Mortlach<br><span class="distillery-cn">慕赫</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Oban_distillery">Oban<br><span class="distillery-cn">欧本</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Old_Pulteney_distillery">Old Pulteney<br><span class="distillery-cn">富特尼</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Port_Charlotte_distillery">Port Charlotte<br><span class="distillery-cn">波夏</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Port_Ellen_distillery">Port Ellen<br><span class="distillery-cn">波特艾伦</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Talisker_distillery">Talisker<br><span class="distillery-cn">泰斯卡</span></a></th>
+            </tr>
+            <tr>
+                <td><strong>集团</strong></td>
+                <td>Pernod Ricard</td>
+                <td>LVMH</td>
+                <td>Isle of Arran Distillers</td>
+                <td>William Grant & Sons</td>
+                <td>Beam Suntory</td>
+                <td>Diageo</td>
+                <td>Remy Cointreau</td>
+                <td>Diageo</td>
+                <td>Diageo</td>
+                <td>Whyte & Mackay</td>
+                <td>Distell</td>
+                <td>Signatory Vintage</td>
+                <td>The GlenAllachie Distillers Co.</td>
+                <td>J & G Grant</td>
+                <td>William Grant & Sons</td>
+                <td>Brown-Forman</td>
+                <td>Pernod Ricard</td>
+                <td>LVMH</td>
+                <td>Edrington</td>
+                <td>Whyte & Mackay</td>
+                <td>Diageo</td>
+                <td>Beam Suntory</td>
+                <td>Edrington</td>
+                <td>William Grant & Sons</td>
+                <td>Diageo</td>
+                <td>Diageo</td>
+                <td>Inver House</td>
+                <td>Bruichladdich Company</td>
+                <td>Diageo</td>
+                <td>Diageo</td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Highland_single_malt">Highland</a></strong></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Aberlour 16 Double Cask 亚伯乐16年双桶</li>
+                        <li>Aberlour 18 亚伯乐18年</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Balvenie 12 Single Barrel 百富12年单桶</li>
+                        <li>Balvenie 12 DoubleWood 百富12年双桶</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Brora Annual Release 2024 大猫2024</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Clynelish 14 小猫14年</li>
+                        <li>Clynelish Special Release 2024 小猫2024SR</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Dalmore 12 大摩12年</li>
+                        <li>Dalmore 15 大摩15年</li>
+                        <li>Dalmore 25 大摩25年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Deanston 12 汀斯顿12年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Edradour Caledonia 12 埃德拉多尔12年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>GlenAllachie 10 Cask Strength 格兰纳里奇10年桶强</li>
+                        <li>GlenAllachie 12 格兰纳里奇12年</li>
+                        <li>GlenAllachie 15 格兰纳里奇15年 <span class="award">2024 IWC世界冠军</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Glenfarclas 12 格兰花格12年</li>
+                        <li>Glenfarclas 21 格兰花格21年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Glenfiddich 12 格兰菲迪12年</li>
+                        <li>Glenfiddich 15 格兰菲迪15年</li>
+                        <li>Glenfiddich 18 格兰菲迪18年</li>
+                        <li>Glenfiddich IPA 格兰菲迪IPA</li>
+                        <li>Glenfiddich Project XX 格兰菲迪XX</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Glendronach 12 格兰多纳12年</li>
+                        <li>Glendronach 18 格兰多纳18年</li>
+                        <li>Glendronach 21 格兰多纳21年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Glenlivet 12 格兰威特12年</li>
+                        <li>Glenlivet Founder's Reserve 格兰威特创始人</li>
+                        <li>Glenlivet Captain's Reserve 格兰威特上尉</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Glenmorangie 10 Original 格兰杰10年</li>
+                        <li>Glenmorangie Lasanta 12 格兰杰12年</li>
+                        <li>Glenmorangie Quinta Ruban 14 格兰杰14年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Highland Park 12 高原骑士12年</li>
+                        <li>Highland Park 18 高原骑士18年</li>
+                        <li>Highland Park 25 高原骑士25年</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Macallan 12 Sherry Oak 麦卡伦12年</li>
+                        <li>Macallan 18 Sherry Oak 麦卡伦18年</li>
+                        <li>Macallan 25 Sherry Oak 麦卡伦25年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Monkey Shoulder 三只猴子</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Mortlach 16 慕赫16年</li>
+                        <li>Mortlach 20 2024 SR 慕赫20年2024</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Oban 14 欧本14年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Old Pulteney 12 富特尼12年</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Talisker 10 泰斯卡10年</li>
+                        <li>Talisker 25 泰斯卡25年</li>
+                        <li>Talisker 45 Glacial Edge 泰斯卡45年 <span class="award">2024 SFWSC最佳威士忌</span></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Islay_whisky">Islay</a></strong></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Ardbeg An Oa 阿贝奥之岬</li>
+                        <li>Ardbeg Uigeadail 阿贝乌干达</li>
+                        <li>Ardbeg Corryvreckan 阿贝漩涡</li>
+                        <li>Ardbeg Vintage Y2K 阿贝千禧23年</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Bowmore 12 波摩12年</li>
+                        <li>Bowmore 18 波摩18年</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Bruichladdich Black Art 23 布赫拉迪星图23年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Caol Ila 12 卡尔里拉12年</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Lagavulin 8 乐加维林8年</li>
+                        <li>Lagavulin 16 乐加维林16年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Laphroaig Select 拉弗格精选</li>
+                        <li>Laphroaig Quarter Cask 拉弗格QC</li>
+                        <li>Laphroaig 10 Cask Strength 拉弗格10年桶强</li>
+                        <li>Laphroaig PX Cask 拉弗格PX</li>
+                        <li>Laphroaig 10 Sherry Oak 拉弗格10雪莉</li>
+                        <li>Laphroaig 1815 拉弗格1815</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Port Charlotte 10 波夏10年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Port Ellen Annual Release 2024 波特艾伦2024 <span class="award">关厂传奇酒厂</span></li>
+                    </ul>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Isle_of_Skye">Skye</a></strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Talisker 10 泰斯卡10年</li>
+                        <li>Talisker 25 泰斯卡25年</li>
+                        <li>Talisker 45 Glacial Edge 泰斯卡45年冰川 <span class="award">2024 SFWSC最佳威士忌</span></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Isle_of_Arran">Arran</a></strong></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Arran 10 艾伦10年</li>
+                        <li>Arran Sherry Cask 艾伦雪莉桶强</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Isle_of_Jura">Jura</a></strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Jura 12 吉拉12年</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Orkney">Orkney</a></strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Highland Park 12 高原骑士12年</li>
+                        <li>Highland Park 18 高原骑士18年</li>
+                        <li>Highland Park 25 高原骑士25年</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>爱尔兰威士忌</h2>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
+                <th><a href="https://en.wikipedia.org/wiki/Old_Bushmills_distillery">Bushmills<br><span class="distillery-cn">布什米尔</span></a></th>
+                <th>Green Spot<br><span class="distillery-cn">绿点</span></th>
+                <th><a href="https://en.wikipedia.org/wiki/Jameson_Irish_Whiskey">Jameson<br><span class="distillery-cn">尊美醇</span></a></th>
+                <th>Midleton<br><span class="distillery-cn">米德尔顿</span></th>
+                <th>Natterjack<br><span class="distillery-cn">奈特杰克</span></th>
+                <th>Powers<br><span class="distillery-cn">能量</span></th>
+                <th><a href="https://en.wikipedia.org/wiki/Redbreast_(whiskey)">Redbreast<br><span class="distillery-cn">知更鸟</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Teeling_Distillery">Teeling<br><span class="distillery-cn">帝霖</span></a></th>
+                <th>Tullamore D.E.W.<br><span class="distillery-cn">图拉多</span></th>
+                <th>Yellow Spot<br><span class="distillery-cn">黄点</span></th>
+                <th>Red Spot<br><span class="distillery-cn">红点</span></th>
+            </tr>
+            <tr>
+                <td><strong>集团</strong></td>
+                <td>Diageo</td>
+                <td>Mitchell & Son</td>
+                <td>Pernod Ricard</td>
+                <td>Midleton Distillery</td>
+                <td>Natterjack</td>
+                <td>Midleton Distillery</td>
+                <td>Midleton Distillery</td>
+                <td>Teeling Distillery</td>
+                <td>William Grant & Sons</td>
+                <td>Mitchell & Son</td>
+                <td>Mitchell & Son</td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Irish_whiskey">Ireland</a></strong></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Bushmills 10 布什米尔10年</li>
+                        <li>Bushmills 16 布什米尔16年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Green Spot 绿点</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Jameson Irish Whiskey 尊美醇</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Midleton Very Rare 2024 米德尔顿珍稀2024</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Natterjack Cask Strength 奈特杰克桶强 <span class="award">2024爱尔兰最佳</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Powers Gold Label 能量金标</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Redbreast 12 知更鸟12年</li>
+                        <li>Redbreast 12 Cask Strength 知更鸟12年桶强</li>
+                        <li>Redbreast 15 知更鸟15年</li>
+                        <li>Redbreast 21 知更鸟21年 <span class="award">2024 WWA最佳壶式蒸馏</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Teeling Single Grain 帝霖单一谷物</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Tullamore D.E.W. 图拉多原味</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Yellow Spot 12 黄点12年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Red Spot 15 红点15年</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>美国威士忌</h2>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
+                <th>1792 Barton</th>
+                <th>Booker's<br><span class="distillery-cn">布克</span></th>
+                <th>Buffalo Trace<br><span class="distillery-cn">水牛足迹</span></th>
+                <th>Elijah Craig<br><span class="distillery-cn">以利亚克雷格</span></th>
+                <th>Evan Williams<br><span class="distillery-cn">埃文威廉姆斯</span></th>
+                <th>Four Roses<br><span class="distillery-cn">四玫瑰</span></th>
+                <th>Heaven Hill</th>
+                <th><a href="https://en.wikipedia.org/wiki/Jack_Daniel's">Jack Daniel's<br><span class="distillery-cn">杰克丹尼</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Jim_Beam">Jim Beam<br><span class="distillery-cn">占边</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Maker's_Mark">Maker's Mark<br><span class="distillery-cn">美格</span></a></th>
+                <th>Michter's<br><span class="distillery-cn">酩帝诗</span></th>
+                <th>Old Forester<br><span class="distillery-cn">老林务官</span></th>
+                <th>Pappy Van Winkle<br><span class="distillery-cn">帕皮</span></th>
+                <th>Sazerac<br><span class="distillery-cn">萨泽拉克</span></th>
+                <th>WhistlePig<br><span class="distillery-cn">口哨猪</span></th>
+                <th>Wild Turkey<br><span class="distillery-cn">威凤凰</span></th>
+                <th>Woodford Reserve<br><span class="distillery-cn">伍德福德珍藏</span></th>
+            </tr>
+            <tr>
+                <td><strong>集团</strong></td>
+                <td>Sazerac</td>
+                <td>Beam Suntory</td>
+                <td>Sazerac</td>
+                <td>Heaven Hill</td>
+                <td>Heaven Hill</td>
+                <td>Kirin</td>
+                <td>Heaven Hill</td>
+                <td>Brown-Forman</td>
+                <td>Beam Suntory</td>
+                <td>Beam Suntory</td>
+                <td>Michter's</td>
+                <td>Brown-Forman</td>
+                <td>Sazerac</td>
+                <td>Sazerac</td>
+                <td>WhistlePig</td>
+                <td>Campari</td>
+                <td>Brown-Forman</td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Kentucky_bourbon">Kentucky</a></strong></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>1792 12 Year Old 1792 12年 <span class="award">2024 WWA最佳波本</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Booker's 2024 Release 布克2024</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Buffalo Trace Bourbon 水牛足迹</li>
+                        <li>Buffalo Trace Antique Collection 水牛足迹古董收藏</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Elijah Craig Small Batch 以利亚小批量</li>
+                        <li>Elijah Craig Barrel Proof 以利亚桶强 <span class="award">2024 SFWSC最佳纯波本</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Evan Williams Black Label 埃文黑标</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Four Roses Yellow Label 四玫瑰黄牌</li>
+                        <li>Four Roses Single Barrel 四玫瑰单桶 <span class="award">2024 WWA最佳单桶波本</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Rittenhouse Rye 100 瑞顿豪斯黑麦</li>
+                        <li>Pikesville Rye 派克斯维尔黑麦</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Jim Beam White Label 占边白标</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Maker's Mark 美格</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Michter's 10 Rye 酩帝诗10年黑麦</li>
+                        <li>Michter's 20 Bourbon 酩帝诗20年波本</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Old Forester 1920 老林务官1920</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Pappy Van Winkle 15 帕皮15年</li>
+                        <li>Pappy Van Winkle 20 帕皮20年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>George T. Stagg 乔治斯塔格</li>
+                        <li>Sazerac Rye 6 萨泽拉克黑麦6年</li>
+                        <li>William Larue Weller 威廉罗利</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Wild Turkey 101 威凤凰101</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Woodford Reserve 伍德福德珍藏</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Tennessee_whiskey">Tennessee</a></strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Jack Daniel's Old No.7 杰克丹尼7号</li>
+                        <li>Jack Daniel's Gentleman Jack 杰克丹尼绅士</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Vermont">Vermont</a></strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>WhistlePig 10 Rye 口哨猪10年黑麦</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>日本威士忌</h2>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
+                <th><a href="https://en.wikipedia.org/wiki/Hakushu_distillery">Hakushu<br><span class="distillery-cn">白州</span></a></th>
+                <th>Hanyu<br><span class="distillery-cn">羽生</span></th>
+                <th><a href="https://en.wikipedia.org/wiki/Hibiki_(whisky)">Hibiki<br><span class="distillery-cn">响</span></a></th>
+                <th>Kakubin<br><span class="distillery-cn">角瓶</span></th>
+                <th>Karuizawa<br><span class="distillery-cn">轻井泽</span></th>
+                <th>Kyoto<br><span class="distillery-cn">京都</span></th>
+                <th>Matsui<br><span class="distillery-cn">松井</span></th>
+                <th>Miyagikyo<br><span class="distillery-cn">宫城峡</span></th>
+                <th><a href="https://en.wikipedia.org/wiki/Nikka_Whisky_Distilling">Nikka<br><span class="distillery-cn">一甲</span></a></th>
+                <th>Toki<br><span class="distillery-cn">季</span></th>
+                <th><a href="https://en.wikipedia.org/wiki/Yamazaki_distillery">Yamazaki<br><span class="distillery-cn">山崎</span></a></th>
+                <th><a href="https://en.wikipedia.org/wiki/Yoichi_distillery">Yoichi<br><span class="distillery-cn">余市</span></a></th>
+            </tr>
+            <tr>
+                <td><strong>集团</strong></td>
+                <td>Suntory</td>
+                <td>Hanyu Distillery</td>
+                <td>Suntory</td>
+                <td>Suntory</td>
+                <td>Karuizawa Distillery</td>
+                <td>Kyoto Whisky</td>
+                <td>Matsui Whisky</td>
+                <td>Nikka</td>
+                <td>Nikka</td>
+                <td>Suntory</td>
+                <td>Suntory</td>
+                <td>Nikka</td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Japanese_whisky">Japan</a></strong></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Hakushu 1973 白州1973</li>
+                        <li>Hakushu 12 白州12年</li>
+                        <li>Hakushu 18 白州18年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Hanyu Ichiro's Malt Card Series 羽生扑克牌 <span class="award">关厂收藏传奇</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Hibiki Harmony 响和风</li>
+                        <li>Hibiki Master's Select 响大师精选</li>
+                        <li>Hibiki 21 响21年</li>
+                        <li>Hibiki 30 响30年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Suntory Kakubin 角瓶</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Karuizawa (Various) 轻井泽 <span class="award">日本麦卡伦</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Kyoto KURO-OBI 京都黑带 <span class="award">2024日本最佳调和</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Matsui Sakura Cask 松井樱花桶 <span class="award">2024日本最佳单一麦芽</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Miyagikyo Single Malt 宫城峡单一麦芽</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Nikka From The Barrel 一甲原酒</li>
+                        <li>Nikka Days 一甲Days</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Suntory Toki 季</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Yamazaki 1923 山崎1923</li>
+                        <li>Yamazaki 12 山崎12年</li>
+                        <li>Yamazaki 18 山崎18年</li>
+                        <li>Yamazaki 25 山崎25年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Yoichi Single Malt 余市单一麦芽</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>台湾威士忌</h2>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
+                <th><a href="https://en.wikipedia.org/wiki/Kavalan_distillery">Kavalan<br><span class="distillery-cn">噶玛兰</span></a></th>
+                <th>Nantou<br><span class="distillery-cn">南投</span></th>
+                <th>Yushan<br><span class="distillery-cn">玉山</span></th>
+            </tr>
+            <tr>
+                <td><strong>集团</strong></td>
+                <td>King Car</td>
+                <td>TTL</td>
+                <td>TTL</td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Taiwan">Taiwan</a></strong></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Kavalan Cask Strength 噶玛兰桶强</li>
+                        <li>Kavalan Fino Sherry Cask 噶玛兰Fino雪莉桶 <span class="award">2025 IWC世界冠军97.04分</span></li>
+                        <li>Kavalan Vinho Barrique 噶玛兰Vinho <span class="award">2015 WWA最佳单一麦芽</span></li>
+                        <li>Kavalan Triple Sherry 噶玛兰三雪莉桶</li>
+                        <li>Kavalan Bourbon Cask 噶玛兰波本桶</li>
+                        <li>Kavalan Peaty Cask 噶玛兰泥煤桶 <span class="award">2024 TWSC最佳单一麦芽</span></li>
+                        <li>Kavalan Select No.1 噶玛兰珍选一号</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Omar Sherry Cask 南投Omar雪莉桶</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Yushan Sherry Cask 玉山雪莉桶</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>印度威士忌</h2>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
+                <th>Amrut<br><span class="distillery-cn">阿姆鲁特</span></th>
+                <th>Indri<br><span class="distillery-cn">因德里</span></th>
+                <th>Paul John<br><span class="distillery-cn">保罗约翰</span></th>
+            </tr>
+            <tr>
+                <td><strong>集团</strong></td>
+                <td>Amrut Distilleries</td>
+                <td>Piccadily Distilleries</td>
+                <td>John Distilleries</td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Indian_whisky">India</a></strong></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Amrut Fusion 阿姆鲁特融合</li>
+                        <li>Amrut Single Malt 阿姆鲁特单一麦芽</li>
+                        <li>Amrut Peated 阿姆鲁特泥煤</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Indri Diwali 因德里排灯节 <span class="award">2023 Whiskies of the World最佳展示</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Paul John Nirvana 保罗约翰涅槃 <span class="award">SIP Awards 2024双金奖</span></li>
+                        <li>Paul John Bold 保罗约翰勇气</li>
+                        <li>Paul John Oloroso 保罗约翰Oloroso <span class="award">IWSC 2024金奖</span></li>
+                        <li>Paul John Brilliance 保罗约翰光辉 <span class="award">IWSC 2024最佳展示</span></li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>其他新兴产区威士忌</h2>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
+                <th>Coburns<br><span class="distillery-cn">科伯恩斯</span></th>
+                <th>Mackmyra<br><span class="distillery-cn">麦克米拉</span></th>
+                <th>Milk & Honey<br><span class="distillery-cn">奶与蜜</span></th>
+                <th>Starward<br><span class="distillery-cn">斯塔沃德</span></th>
+                <th>Sullivans Cove<br><span class="distillery-cn">苏利文湾</span></th>
+                <th>Teerenpeli<br><span class="distillery-cn">特伦佩利</span></th>
+                <th>The English<br><span class="distillery-cn">英格兰</span></th>
+            </tr>
+            <tr>
+                <td><strong>集团</strong></td>
+                <td>Coburns Distilling</td>
+                <td>Mackmyra Svensk Whisky</td>
+                <td>Milk & Honey Distillery</td>
+                <td>New World Whisky Distillery</td>
+                <td>Sullivans Cove Distillery</td>
+                <td>Teerenpeli Distillery</td>
+                <td>The English Whisky Co.</td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Australian_whisky">Australia</a></strong></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Coburns Mythical Gods 科伯恩斯神话 <span class="award">2024 Whisky Bible 4项Liquid Gold</span></li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Starward Nova 斯塔沃德新星</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Sullivans Cove French Oak 苏利文湾法国橡木</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Milk_%26_Honey_Distillery">Israel</a></strong></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Milk & Honey Sherry Cask 奶与蜜雪莉桶 <span class="award">2023 WWA世界最佳单一麦芽</span></li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Mackmyra">Sweden</a></strong></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Mackmyra Svensk Ek 麦克米拉瑞典橡木</li>
+                    </ul>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Teerenpeli">Finland</a></strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Teerenpeli Kulo 特伦佩利库洛 <span class="award">2024 IWSC全球年度生产商</span></li>
+                    </ul>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/English_whisky">England</a></strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>The English Sherry Cask 英格兰雪莉桶 <span class="award">2024 WWA世界最佳单一麦芽</span></li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>调和威士忌</h2>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
+                <th>Ballantine's<br><span class="distillery-cn">百龄坛</span></th>
+                <th>Chivas Regal<br><span class="distillery-cn">芝华士</span></th>
+                <th>Compass Box<br><span class="distillery-cn">罗盘针</span></th>
+                <th>Cutty Sark<br><span class="distillery-cn">顺风</span></th>
+                <th>Dewar's<br><span class="distillery-cn">帝王</span></th>
+                <th>Famous Grouse<br><span class="distillery-cn">威雀</span></th>
+                <th>Grant's<br><span class="distillery-cn">格兰</span></th>
+                <th>J&B</th>
+                <th>Johnnie Walker<br><span class="distillery-cn">尊尼获加</span></th>
+                <th><a href="https://en.wikipedia.org/wiki/Monkey_Shoulder">Monkey Shoulder<br><span class="distillery-cn">三只猴子</span></a></th>
+                <th>Naked Malt<br><span class="distillery-cn">裸雀</span></th>
+                <th>Royal Salute<br><span class="distillery-cn">皇家礼炮</span></th>
+                <th>Teacher's<br><span class="distillery-cn">铁骑士</span></th>
+            </tr>
+            <tr>
+                <td><strong>集团</strong></td>
+                <td>Pernod Ricard</td>
+                <td>Pernod Ricard</td>
+                <td>Compass Box</td>
+                <td>Berry Bros. & Rudd</td>
+                <td>Bacardi</td>
+                <td>Edrington</td>
+                <td>William Grant & Sons</td>
+                <td>Diageo</td>
+                <td>Diageo</td>
+                <td>William Grant & Sons</td>
+                <td>William Grant & Sons</td>
+                <td>Chivas Brothers</td>
+                <td>Beam Suntory</td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Blended_whisky">Blend</a></strong></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Ballantine's 17 百龄坛17年 <span class="award">2024 WWA最佳调和</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Chivas 12 芝华士12年</li>
+                        <li>Chivas 18 芝华士18年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Compass Box Artist Blend 罗盘针艺术家</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Cutty Sark 顺风</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Dewar's 12 帝王12年</li>
+                        <li>Dewar's 21 帝王21年</li>
+                        <li>Dewar's Double Double 32 帝王双重双32年 <span class="award">2023 WWA最佳调和麦芽</span></li>
+                        <li>Dewar's Double Double 37 帝王双重双37年 <span class="award">2024 WWA最佳调和麦芽</span></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Famous Grouse 威雀</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Grant's 格兰</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>J&B Rare J&B</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Johnnie Walker Black Label 黑方</li>
+                        <li>Johnnie Walker Green Label 绿方</li>
+                        <li>Johnnie Walker Blue Label 蓝方</li>
+                        <li>Johnnie Walker Ghost and Rare 消逝酒厂</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Monkey Shoulder 三只猴子</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Naked Malt 裸雀</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Royal Salute 21 皇家礼炮21年</li>
+                        <li>Royal Salute 38 Stone of Destiny 皇家礼炮38年命运之石</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Teacher's Highland Cream 铁骑士</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>独立装瓶商 Independent Bottlers</h2>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
+                <th>Berry Bros. & Rudd<br><span class="distillery-cn">贝瑞兄弟</span></th>
+                <th>Cadenhead's<br><span class="distillery-cn">凯德汉</span></th>
+                <th>Douglas Laing<br><span class="distillery-cn">道格拉斯梁</span></th>
+                <th>Dramfool</th>
+                <th>Gordon & MacPhail<br><span class="distillery-cn">高登麦克菲尔</span></th>
+                <th>Ian MacLeod<br><span class="distillery-cn">烟头</span></th>
+                <th>North Star Spirits<br><span class="distillery-cn">北极星</span></th>
+                <th>Signatory Vintage<br><span class="distillery-cn">圣弗力</span></th>
+                <th>TBWC<br><span class="distillery-cn">漫画标</span></th>
+                <th>The Whisky Exchange<br><span class="distillery-cn">TWE</span></th>
+                <th>Thompson Bros<br><span class="distillery-cn">汤普森兄弟</span></th>
+            </tr>
+            <tr>
+                <td><strong>集团</strong></td>
+                <td>Berry Bros. & Rudd</td>
+                <td>Cadenhead's</td>
+                <td>Douglas Laing</td>
+                <td>Dramfool</td>
+                <td>Gordon & MacPhail</td>
+                <td>Ian MacLeod</td>
+                <td>North Star Spirits</td>
+                <td>Signatory Vintage</td>
+                <td>Atom Brands</td>
+                <td>Speciality Drinks</td>
+                <td>Thompson Bros</td>
+            </tr>
+            <tr>
+                <td><strong><a href="https://en.wikipedia.org/wiki/Independent_bottler">IB</a></strong></td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Berry Bros. Blue Spirits 贝瑞兄弟蓝魂系列</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Cadenhead's Authentic Collection 凯德汉真选系列</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Douglas Laing Old Particular 道格拉斯梁老特性系列</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Dramfool Single Casks Dramfool单桶</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Gordon & MacPhail Mortlach 15 G&M慕赫15年</li>
+                        <li>Gordon & MacPhail Caol Ila 12 G&M卡尔里拉12年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Smokehead Series 烟头系列</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>North Star Single Casks 北极星单桶</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Signatory Secret Speyside 2005 圣弗力神秘斯佩塞</li>
+                        <li>Signatory Benrinnes 15 圣弗力本利林15年</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>TBWC Comic Label Series 漫画标系列</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Elements of Islay 艾雷元素</li>
+                        <li>Single Malts of Scotland 苏格兰单一麦芽</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul class="whisky-list">
+                        <li>Thompson Bros Blended Malt 汤普森兄弟调和麦芽 <span class="award">2024最佳独立装瓶商</span></li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="summary">
+        <h2>数据汇总</h2>
+        <table class="summary-table">
+            <tr>
+                <th>国家/地区</th>
+                <th>表格数量</th>
+                <th>酒厂总数</th>
+                <th>酒款总数</th>
+            </tr>
+            <tr>
+                <td>苏格兰威士忌</td>
+                <td>1个表格 (合并所有产区)</td>
+                <td>30家</td>
+                <td>约82款</td>
+            </tr>
+            <tr>
+                <td>爱尔兰威士忌</td>
+                <td>1个表格</td>
+                <td>11家</td>
+                <td>约18款</td>
+            </tr>
+            <tr>
+                <td>美国威士忌</td>
+                <td>1个表格 (合并所有产区)</td>
+                <td>17家</td>
+                <td>约28款</td>
+            </tr>
+            <tr>
+                <td>日本威士忌</td>
+                <td>1个表格</td>
+                <td>12家</td>
+                <td>约24款</td>
+            </tr>
+            <tr>
+                <td>台湾威士忌</td>
+                <td>1个表格</td>
+                <td>3家</td>
+                <td>约10款</td>
+            </tr>
+            <tr>
+                <td>印度威士忌</td>
+                <td>1个表格</td>
+                <td>3家</td>
+                <td>约10款</td>
+            </tr>
+            <tr>
+                <td>其他新兴产区</td>
+                <td>1个表格</td>
+                <td>7家</td>
+                <td>约7款</td>
+            </tr>
+            <tr>
+                <td>调和威士忌</td>
+                <td>1个表格</td>
+                <td>13家</td>
+                <td>约20款</td>
+            </tr>
+            <tr>
+                <td>独立装瓶商</td>
+                <td>1个表格</td>
+                <td>11家</td>
+                <td>约14款</td>
+            </tr>
+            <tr>
+                <td><strong>总计</strong></td>
+                <td><strong>9个表格</strong></td>
+                <td><strong>约107家酒厂</strong></td>
+                <td><strong>约213款威士忌</strong></td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>
