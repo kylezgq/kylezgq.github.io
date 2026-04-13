@@ -3,1538 +3,1060 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whisky Log - 威士忌品鉴记录</title>
+    <title>Whisky Log - 威士忌风味矩阵</title>
     <style>
-        * {
+        * { box-sizing: border-box; }
+        body {
+            font-family: Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background: #fff;
         }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-            padding: 40px 200px;
-            line-height: 1.6;
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        h1 {
+
+        /* 标题区 */
+        .header-section {
             text-align: center;
-            margin-bottom: 10px;
-            color: #333;
-            font-size: 28px;
-        }
-        .subtitle {
-            text-align: center;
-            font-size: 14px;
-            color: #666;
-            font-style: italic;
-            margin-bottom: 40px;
-        }
-        h2 {
-            margin: 50px 0 20px;
-            color: #333;
-            font-size: 20px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
-        }
-        .table-container {
-            overflow-x: auto;
             margin-bottom: 30px;
-            background: #ffffff;
-            border: 1px solid #000;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .main-title {
+            font-family: Verdana, sans-serif;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+        }
+        .header-subtitle {
+            font-family: Verdana, sans-serif;
             font-size: 13px;
-            background-color: #ffffff;
+            color: #888;
+            margin: 0;
         }
-        th, td {
-            border: 1px solid #000;
-            padding: 10px 12px;
-            text-align: center;
-            vertical-align: middle;
+        .header-subtitle a {
+            color: #666;
+            text-decoration: none;
         }
-        /* 第一行 - 深灰色 */
-        thead tr:first-child th,
-        tr:first-child th {
-            background-color: #4a4a4a;
-            color: #fff;
-            font-weight: 600;
-            white-space: nowrap;
-            min-width: 140px;
+        .header-subtitle a:hover {
+            text-decoration: underline;
         }
-        tr:first-child th .distillery-name {
-            display: block;
-            font-size: 13px;
-            margin-bottom: 2px;
-        }
-        tr:first-child th .distillery-cn {
-            display: block;
-            font-size: 12px;
+        .quote {
+            font-family: Verdana, sans-serif;
+            font-size: 14px;
             font-weight: normal;
-            opacity: 0.9;
+            font-style: italic;
+            color: #666;
+            margin: 0;
         }
-        /* 第一行酒厂链接样式 */
-        tr:first-child th a {
-            color: #fff;
-            text-decoration: none;
+
+        /* 桌面端：横向三栏布局 */
+        .main-layout {
+            display: flex;
+            gap: 20px;
         }
-        tr:first-child th a:hover {
-            text-decoration: underline;
+
+        /* 左侧边栏 */
+        .sidebar {
+            flex: 0 0 220px;
         }
-        /* 第一列产区链接样式 */
-        tr td:first-child a {
-            color: #fff;
-            text-decoration: none;
+        .sidebar-panel {
+            margin-bottom: 20px;
         }
-        tr td:first-child a:hover {
-            text-decoration: underline;
-        }
-        /* 第一列 - 深灰色（与第一行相同） */
-        tr td:first-child,
-        tr th:first-child {
-            background-color: #4a4a4a !important;
-            color: #fff;
+        .sidebar-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
             font-weight: 600;
-            width: 90px;
-            min-width: 90px;
-            white-space: nowrap;
         }
-        /* 第一列第一行单元格 - 斜线分割 */
-        th.corner-cell {
+
+        /* 搜索框 */
+        .search-input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 13px;
+            font-family: Verdana, sans-serif;
+        }
+        .btn {
+            padding: 6px 15px;
+            border: none;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: Verdana, sans-serif;
+        }
+        .btn-apply {
+            background: #5cb85c;
+            color: white;
+        }
+        .btn-reset {
+            background: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        /* Regions */
+        .sidebar-panel + .sidebar-panel {
+            margin-top: 40px;
+        }
+        .region-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .region-list li {
+            margin-bottom: 6px;
+        }
+        .region-list label {
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s;
+        }
+        .region-list label:hover {
+            opacity: 0.7;
+        }
+        .region-list input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        /* 地图 - 精确还原 scotchgit 风格 */
+        .map-panel {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: -30px;
+            padding-left: 10px;
             position: relative;
-            width: 100px;
-            height: 50px;
-            background-color: #4a4a4a;
+        }
+        .map-svg {
+            width: 220px;
+            height: 320px;
+        }
+        .map-svg path {
+            fill: #f0f0f0;
+            stroke: #333;
+            stroke-width: 1.5;
+            cursor: pointer;
+            transition: fill 0.2s;
+        }
+        .map-svg path:hover {
+            fill: #d0d0d0;
+        }
+        .map-svg path.active {
+            fill: #4682b4;
+        }
+
+        /* 地图tooltip */
+        .map-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: nowrap;
+            display: none;
+        }
+
+        /* 中间矩阵图 */
+        .matrix-wrapper {
+            flex: 1;
+            min-width: 0;
+        }
+        .matrix-container {
+            padding: 10px;
+        }
+
+        /* 顶部图例区域 - 右对齐 */
+        .legend-top {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+            padding-right: 5px;
+        }
+        .legend-vertical-top {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-end;
+        }
+        .legend-item-vertical {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+        }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .legend-dot.rich { background: #d9534f; }
+        .legend-dot.medium { background: #5cb85c; }
+        .legend-dot.light { background: #f0ad4e; }
+
+        .axis-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 11px;
+            color: #666;
+        }
+        .matrix-chart {
+            position: relative;
+            height: 580px;
+            background: #fff;
+            border: 1px solid #ddd;
             overflow: hidden;
         }
-        th.corner-cell .diag-line {
+        .axis-v {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom right, transparent 49.7%, #fff 49.7%, #fff 50.3%, transparent 50.3%);
+            left: 50%;
+            top: 5%;
+            bottom: 5%;
+            width: 1px;
+            background: #999;
         }
-        th.corner-cell .distillery-label {
+        .axis-h {
             position: absolute;
-            top: 6px;
-            left: 8px;
+            top: 50%;
+            left: 5%;
+            right: 5%;
+            height: 1px;
+            background: #999;
+        }
+
+        /* 轴线标签 - 水平中间线左右两端 */
+        .axis-label-h {
+            position: absolute;
             font-size: 13px;
-            font-weight: 600;
-        }
-        th.corner-cell .region-label {
-            position: absolute;
-            bottom: 6px;
-            right: 8px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        /* 第二行 - 浅灰色（第一列除外） */
-        tr:nth-child(2) td:not(:first-child) {
-            background-color: #d0d0d0;
-            color: #333;
-            font-size: 12px;
-        }
-        /* 其余单元格 - 白色（第一列除外） */
-        tbody tr td:not(:first-child),
-        tr:nth-child(n+3) td:not(:first-child) {
-            background-color: #ffffff;
-            color: #333;
-        }
-        /* 酒款列表 */
-        .whisky-list {
-            margin: 0;
-            padding-left: 16px;
-            text-align: left;
-        }
-        .whisky-list li {
-            margin: 6px 0;
-            padding: 2px 0;
-            line-height: 1.5;
-        }
-        .award {
-            color: #c62828;
             font-weight: bold;
+            color: #000;
+            top: 50%;
+            transform: translateY(-50%);
         }
-        .distillery-name {
-            font-weight: 600;
+        .axis-label-h.left {
+            left: 2%;
         }
-        .distillery-cn {
-            font-weight: normal;
-            opacity: 0.8;
+        .axis-label-h.right {
+            right: 2%;
         }
-        .summary {
-            margin-top: 50px;
-            padding: 30px;
-            background: #ffffff;
-            border: 1px solid #000;
-        }
-        .summary h2 {
-            margin-top: 0;
-            border-bottom: 2px solid #333;
-        }
-        .summary-table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-        .summary-table th,
-        .summary-table td {
-            padding: 12px;
+
+        /* 轴线标签 - 垂直中间线上下两端 */
+        .axis-label-v {
+            position: absolute;
+            font-size: 13px;
+            font-weight: bold;
+            color: #000;
+            left: 50%;
+            transform: translateX(-50%);
             text-align: center;
-            border: 1px solid #000;
+            white-space: nowrap;
         }
-        .summary-table th {
-            background-color: #4a4a4a;
-            color: #fff;
+        .axis-label-v.top {
+            top: 2%;
         }
-        .summary-table tr:nth-child(even) td {
-            background-color: #f5f5f5;
+        .axis-label-v.bottom {
+            bottom: 2%;
         }
-        .summary-table tr:nth-child(odd) td {
-            background-color: #ffffff;
+
+        /* 四个象限标签 */
+        .quadrant-label {
+            position: absolute;
+            font-size: 13px;
+            font-weight: bold;
+            color: #888;
         }
-        /* 移动端适配 */
+        .ql-tl { left: 8%; top: 8%; }
+        .ql-tr { right: 8%; top: 8%; }
+        .ql-bl { left: 8%; bottom: 8%; }
+        .ql-br { right: 8%; bottom: 8%; }
+
+
+        /* 威士忌点 */
+        .whisky-point-wrapper {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+        .whisky-point-wrapper:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            z-index: 100;
+        }
+        .whisky-point-wrapper.dimmed {
+            opacity: 0.1;
+        }
+        .whisky-point-wrapper.selected .whisky-dot {
+            transform: scale(1.5);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.8);
+        }
+
+        .whisky-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        .whisky-dot.rich { background: #d9534f; }
+        .whisky-dot.medium { background: #5cb85c; }
+        .whisky-dot.light { background: #f0ad4e; }
+
+        .whisky-label {
+            font-size: 10px;
+            color: #333;
+            white-space: nowrap;
+            text-shadow: 0 0 2px white, 0 0 2px white, 0 0 2px white;
+        }
+        .whisky-label.left {
+            order: -1;
+        }
+
+        /* 右侧详情面板 */
+        .detail-panel {
+            flex: 0 0 240px;
+            min-height: 500px;
+            margin-top: 75px;
+        }
+        .detail-content {
+            display: none;
+        }
+        .detail-content.active {
+            display: block;
+            background: #f8f8f8;
+            border-radius: 4px;
+            padding: 15px;
+            min-height: 500px;
+        }
+
+        /* 详情面板布局 */
+        .detail-whisky-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        .detail-subtitle {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .detail-info-grid {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 10px 5px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        .detail-info-label {
+            color: #666;
+        }
+        .detail-info-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+        .detail-section-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .word-cloud {
+            background: #1a1a2e;
+            color: white;
+            padding: 20px;
+            border-radius: 4px;
+            min-height: 150px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .word {
+            display: inline-block;
+        }
+        .word-large { font-size: 28px; color: #90ee90; }
+        .word-medium { font-size: 18px; color: #87ceeb; }
+        .word-small { font-size: 13px; color: #dda0dd; }
+
+        /* 手机端响应式 */
         @media (max-width: 768px) {
-            body {
-                padding: 20px 10px;
+            .main-layout {
+                flex-direction: column;
             }
-            h1 {
-                font-size: 22px;
+            .sidebar {
+                flex: 1;
+                order: 1;
             }
-            .subtitle {
-                font-size: 12px;
-                margin-bottom: 25px;
+            .sidebar-panel + .sidebar-panel {
+                margin-top: 15px;
             }
-            h2 {
-                font-size: 16px;
-                margin: 30px 0 15px;
+            .matrix-wrapper {
+                order: 2;
             }
-            .table-container {
-                max-width: 100%;
+            .legend-top {
+                justify-content: center;
+                padding-right: 0;
             }
-            th, td {
-                padding: 8px 6px;
-                font-size: 11px;
+            .legend-vertical-top {
+                flex-direction: row;
+                gap: 15px;
             }
-            tr:first-child th {
-                min-width: 100px;
+            .detail-panel {
+                flex: 1;
+                order: 3;
+                min-height: auto;
             }
-            tr td:first-child,
-            tr th:first-child {
-                width: 70px;
-                min-width: 70px;
+            .map-svg {
+                width: 180px;
+                height: 240px;
             }
-            .whisky-list {
-                padding-left: 12px;
+            .matrix-chart {
+                height: 400px;
             }
-            .whisky-list li {
-                margin: 4px 0;
-                font-size: 10px;
+            .whisky-label {
+                font-size: 9px;
             }
         }
     </style>
 </head>
 <body>
-    <h1>Whisky Log - 威士忌品鉴记录</h1>
-    <p class="subtitle">"Whisky is liquid sunshine." — Winston Churchill</p>
+    <div class="container">
+        <!-- 标题区 -->
+        <div class="header-section">
+            <h1 class="main-title">Meandering the World, One Whisky at a Time</h1>
+            <p class="header-subtitle">crafted by <a href="https://kylezgq.github.io" target="_blank">@kylezgq</a>, inspired by <a href="https://www.reddit.com/r/Scotch/" target="_blank">r/Scotch</a></p>
+        </div>
 
-    <h2>苏格兰威士忌</h2>
-    <div class="table-container">
-        <table>
-            <tr>
-                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
-                <th><a href="https://en.wikipedia.org/wiki/Aberlour_distillery">Aberlour<br><span class="distillery-cn">亚伯乐</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Ardbeg_distillery">Ardbeg<br><span class="distillery-cn">阿贝</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Arran_distillery">Arran<br><span class="distillery-cn">艾伦</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Balvenie_distillery">Balvenie<br><span class="distillery-cn">百富</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Bowmore_distillery">Bowmore<br><span class="distillery-cn">波摩</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Brora_distillery">Brora<br><span class="distillery-cn">大猫</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Bruichladdich_distillery">Bruichladdich<br><span class="distillery-cn">布赫拉迪</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Caol_Ila_distillery">Caol Ila<br><span class="distillery-cn">卡尔里拉</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Clynelish_distillery">Clynelish<br><span class="distillery-cn">小猫</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Dalmore_distillery">Dalmore<br><span class="distillery-cn">大摩</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Deanston_distillery">Deanston<br><span class="distillery-cn">汀斯顿</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Edradour_distillery">Edradour<br><span class="distillery-cn">埃德拉多尔</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/GlenAllachie_distillery">GlenAllachie<br><span class="distillery-cn">格兰纳里奇</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Glenfarclas_distillery">Glenfarclas<br><span class="distillery-cn">格兰花格</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Glenfiddich_distillery">Glenfiddich<br><span class="distillery-cn">格兰菲迪</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Glendronach_distillery">Glendronach<br><span class="distillery-cn">格兰多纳</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Glenlivet_distillery">Glenlivet<br><span class="distillery-cn">格兰威特</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Glenmorangie_distillery">Glenmorangie<br><span class="distillery-cn">格兰杰</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Highland_Park_distillery">Highland Park<br><span class="distillery-cn">高原骑士</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Jura_distillery">Jura<br><span class="distillery-cn">吉拉</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Lagavulin_distillery">Lagavulin<br><span class="distillery-cn">乐加维林</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Laphroaig_distillery">Laphroaig<br><span class="distillery-cn">拉弗格</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Macallan_distillery">Macallan<br><span class="distillery-cn">麦卡伦</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Monkey_Shoulder">Monkey Shoulder<br><span class="distillery-cn">三只猴子</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Mortlach_distillery">Mortlach<br><span class="distillery-cn">慕赫</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Oban_distillery">Oban<br><span class="distillery-cn">欧本</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Old_Pulteney_distillery">Old Pulteney<br><span class="distillery-cn">富特尼</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Port_Charlotte_distillery">Port Charlotte<br><span class="distillery-cn">波夏</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Port_Ellen_distillery">Port Ellen<br><span class="distillery-cn">波特艾伦</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Talisker_distillery">Talisker<br><span class="distillery-cn">泰斯卡</span></a></th>
-            </tr>
-            <tr>
-                <td><strong>集团</strong></td>
-                <td>Pernod Ricard</td>
-                <td>LVMH</td>
-                <td>Isle of Arran Distillers</td>
-                <td>William Grant & Sons</td>
-                <td>Beam Suntory</td>
-                <td>Diageo</td>
-                <td>Remy Cointreau</td>
-                <td>Diageo</td>
-                <td>Diageo</td>
-                <td>Whyte & Mackay</td>
-                <td>Distell</td>
-                <td>Signatory Vintage</td>
-                <td>The GlenAllachie Distillers Co.</td>
-                <td>J & G Grant</td>
-                <td>William Grant & Sons</td>
-                <td>Brown-Forman</td>
-                <td>Pernod Ricard</td>
-                <td>LVMH</td>
-                <td>Edrington</td>
-                <td>Whyte & Mackay</td>
-                <td>Diageo</td>
-                <td>Beam Suntory</td>
-                <td>Edrington</td>
-                <td>William Grant & Sons</td>
-                <td>Diageo</td>
-                <td>Diageo</td>
-                <td>Inver House</td>
-                <td>Bruichladdich Company</td>
-                <td>Diageo</td>
-                <td>Diageo</td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Highland_single_malt">Highland</a></strong></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Aberlour 16 Double Cask 亚伯乐16年双桶</li>
-                        <li>Aberlour 18 亚伯乐18年</li>
+        <!-- 主布局 -->
+        <div class="main-layout">
+            <!-- 左侧边栏 -->
+            <div class="sidebar">
+                <!-- 搜索框 -->
+                <div class="sidebar-panel" style="margin-top: 75px;">
+                    <input type="text" class="search-input" id="searchInput" placeholder="输入酒款名称、酒厂...">
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-apply" onclick="applySearch()">Apply</button>
+                        <button class="btn btn-reset" onclick="resetFilters()">Reset</button>
+                    </div>
+                </div>
+
+                <!-- Regions -->
+                <div class="sidebar-panel">
+                    <div class="sidebar-title">Regions</div>
+                    <ul class="region-list">
+                        <li><label><input type="checkbox" value="Highland" checked onchange="updateRegionFilter()"> Highland</label></li>
+                        <li><label><input type="checkbox" value="Speyside" checked onchange="updateRegionFilter()"> Speyside</label></li>
+                        <li><label><input type="checkbox" value="Islay" checked onchange="updateRegionFilter()"> Islay</label></li>
+                        <li><label><input type="checkbox" value="Islands" checked onchange="updateRegionFilter()"> Islands</label></li>
+                        <li><label><input type="checkbox" value="Lowland" checked onchange="updateRegionFilter()"> Lowland</label></li>
+                        <li><label><input type="checkbox" value="Campbeltown" checked onchange="updateRegionFilter()"> Campbeltown</label></li>
+                        <li><label><input type="checkbox" value="Others" checked onchange="updateRegionFilter()"> Others</label></li>
                     </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Balvenie 12 Single Barrel 百富12年单桶</li>
-                        <li>Balvenie 12 DoubleWood 百富12年双桶</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Brora Annual Release 2024 大猫2024</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Clynelish 14 小猫14年</li>
-                        <li>Clynelish Special Release 2024 小猫2024SR</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Dalmore 12 大摩12年</li>
-                        <li>Dalmore 15 大摩15年</li>
-                        <li>Dalmore 25 大摩25年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Deanston 12 汀斯顿12年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Edradour Caledonia 12 埃德拉多尔12年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>GlenAllachie 10 Cask Strength 格兰纳里奇10年桶强</li>
-                        <li>GlenAllachie 12 格兰纳里奇12年</li>
-                        <li>GlenAllachie 15 格兰纳里奇15年 <span class="award">2024 IWC世界冠军</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Glenfarclas 12 格兰花格12年</li>
-                        <li>Glenfarclas 21 格兰花格21年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Glenfiddich 12 格兰菲迪12年</li>
-                        <li>Glenfiddich 15 格兰菲迪15年</li>
-                        <li>Glenfiddich 18 格兰菲迪18年</li>
-                        <li>Glenfiddich IPA 格兰菲迪IPA</li>
-                        <li>Glenfiddich Project XX 格兰菲迪XX</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Glendronach 12 格兰多纳12年</li>
-                        <li>Glendronach 18 格兰多纳18年</li>
-                        <li>Glendronach 21 格兰多纳21年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Glenlivet 12 格兰威特12年</li>
-                        <li>Glenlivet Founder's Reserve 格兰威特创始人</li>
-                        <li>Glenlivet Captain's Reserve 格兰威特上尉</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Glenmorangie 10 Original 格兰杰10年</li>
-                        <li>Glenmorangie Lasanta 12 格兰杰12年</li>
-                        <li>Glenmorangie Quinta Ruban 14 格兰杰14年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Highland Park 12 高原骑士12年</li>
-                        <li>Highland Park 18 高原骑士18年</li>
-                        <li>Highland Park 25 高原骑士25年</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Macallan 12 Sherry Oak 麦卡伦12年</li>
-                        <li>Macallan 18 Sherry Oak 麦卡伦18年</li>
-                        <li>Macallan 25 Sherry Oak 麦卡伦25年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Monkey Shoulder 三只猴子</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Mortlach 16 慕赫16年</li>
-                        <li>Mortlach 20 2024 SR 慕赫20年2024</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Oban 14 欧本14年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Old Pulteney 12 富特尼12年</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Talisker 10 泰斯卡10年</li>
-                        <li>Talisker 25 泰斯卡25年</li>
-                        <li>Talisker 45 Glacial Edge 泰斯卡45年 <span class="award">2024 SFWSC最佳威士忌</span></li>
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Islay_whisky">Islay</a></strong></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Ardbeg An Oa 阿贝奥之岬</li>
-                        <li>Ardbeg Uigeadail 阿贝乌干达</li>
-                        <li>Ardbeg Corryvreckan 阿贝漩涡</li>
-                        <li>Ardbeg Vintage Y2K 阿贝千禧23年</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Bowmore 12 波摩12年</li>
-                        <li>Bowmore 18 波摩18年</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Bruichladdich Black Art 23 布赫拉迪星图23年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Caol Ila 12 卡尔里拉12年</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Lagavulin 8 乐加维林8年</li>
-                        <li>Lagavulin 16 乐加维林16年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Laphroaig Select 拉弗格精选</li>
-                        <li>Laphroaig Quarter Cask 拉弗格QC</li>
-                        <li>Laphroaig 10 Cask Strength 拉弗格10年桶强</li>
-                        <li>Laphroaig PX Cask 拉弗格PX</li>
-                        <li>Laphroaig 10 Sherry Oak 拉弗格10雪莉</li>
-                        <li>Laphroaig 1815 拉弗格1815</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Port Charlotte 10 波夏10年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Port Ellen Annual Release 2024 波特艾伦2024 <span class="award">关厂传奇酒厂</span></li>
-                    </ul>
-                </td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Isle_of_Skye">Skye</a></strong></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Talisker 10 泰斯卡10年</li>
-                        <li>Talisker 25 泰斯卡25年</li>
-                        <li>Talisker 45 Glacial Edge 泰斯卡45年冰川 <span class="award">2024 SFWSC最佳威士忌</span></li>
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Isle_of_Arran">Arran</a></strong></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Arran 10 艾伦10年</li>
-                        <li>Arran Sherry Cask 艾伦雪莉桶强</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Isle_of_Jura">Jura</a></strong></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Jura 12 吉拉12年</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Orkney">Orkney</a></strong></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Highland Park 12 高原骑士12年</li>
-                        <li>Highland Park 18 高原骑士18年</li>
-                        <li>Highland Park 25 高原骑士25年</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
+                </div>
+
+                <!-- Scotland 地图 - 精确还原 scotchgit 风格 -->
+                <div class="sidebar-panel map-panel" style="margin-top: -20px; padding-left: 0px;">
+                    <div class="map-tooltip" id="mapTooltip"></div>
+                    <svg class="map-svg" viewBox="-20 80 350 500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Islands 岛屿区 (西部和北部岛屿群) -->
+                        <path id="Islands" class="map-region" data-region="Islands" d="m 118,399 c -4,5 -3,7 -3,13 0,3 0,7 4,7 8,-1 5,-16 -1,-20 z m -4,-17 c 4,5 12,13 19,12 -2,-3 -2,-5 -6,-6 0,0 0,-4 0,-4 0,0 -13,-2 -13,-2 z M 72,369 c 0,0 -6,4 -6,4 3,1 7,0 6,-4 z m 11,21 c 3,-6 4,-6 1,-12 2,0 4,1 6,0 4,-1 8,-10 9,-13 -7,0 -13,6 -17,11 -3,4 -9,8 1,14 z m -6,-67 c -6,6 -8,2 -9,9 4,1 4,2 6,5 0,0 8,1 8,1 0,0 -6,4 -6,4 0,0 7,4 7,4 0,0 -20,5 -20,5 1,1 1,2 2,3 3,1 9,2 11,0 1,-2 1,-3 1,-4 10,3 5,-3 16,-1 3,-4 5,-5 10,-5 -1,-10 -5,-7 -11,-11 -5,-3 -4,-5 -15,-10 z m -16,-3 c -7,5 -11,5 -12,12 -7,1 -11,1 -17,5 1,1 1,2 3,2 5,1 17,-8 21,-11 3,-2 6,-4 5,-8 z m 7,-27 c 0,0 -2,6 -2,6 0,0 11,-1 11,-1 0,0 -9,-5 -9,-5 z m -56,-3 c 0,0 -5,4 -5,4 0,9 -1,9 -5,16 0,0 1,1 1,1 0,0 8,-11 8,-11 0,0 3,-6 3,-6 0,0 -2,-4 -2,-4 z m 80,-34 c -2,4 -3,6 -7,7 0,11 6,8 7,6 1,-1 0,-12 0,-13 z m -68,-9 c -3,-4 -4,-3 -8,-4 0,0 -1,4 -1,4 1,0 3,1 4,1 8,5 0,14 -1,20 -1,5 1,9 -2,18 0,0 7,0 7,0 0,-6 1,-12 2,-18 1,-7 0,-10 6,-15 0,0 -1,-6 -1,-6 4,-1 5,-1 7,-5 -8,-1 -9,-2 -13,5 z m 50,-7 c 0,0 -6,5 -6,5 0,0 3,8 3,8 -9,1 -6,-4 -13,-6 0,0 2,15 2,15 0,0 -9,-5 -9,-5 -1,6 2,9 7,13 1,-1 2,-2 3,-3 9,-3 4,14 10,16 5,3 7,-6 12,1 3,-1 9,-3 8,3 -1,2 -4,4 -5,6 8,0 8,-4 11,-9 0,0 4,-5 4,-5 -6,-1 -14,-4 -17,-10 0,0 -3,-18 -3,-18 -1,-5 -3,-8 -7,-11 z M 52,205 c -3,-6 -5,-6 -11,-4 0,0 1,4 1,4 -7,4 -5,8 1,6 0,0 2,5 2,5 0,0 -6,0 -6,0 0,0 -1,3 -1,3 5,2 6,3 7,8 0,0 -8,3 -8,3 3,4 8,7 12,3 2,-1 3,-5 5,-6 1,-1 5,0 7,0 -1,-6 -3,-8 -8,-12 0,0 5,-2 5,-2 0,3 1,4 3,5 5,4 10,0 15,-2 -2,-7 -8,-6 -14,-6 0,0 16,-4 16,-4 -3,-11 3,-10 12,-13 0,0 -2,-7 -2,-7 0,-2 2,-6 -2,-8 -3,-3 -9,4 -11,6 -8,7 -11,5 -15,8 -4,3 0,6 -8,13 z m 29,-6 c 0,0 0,4 0,4 6,-2 9,1 12,-5 0,0 -12,1 -12,1 z m 165,-45 c 0,0 -2,5 -2,5 0,0 6,3 6,3 0,0 2,-8 2,-8 0,0 -6,0 -6,0 z m -18,-5 c 0,1 1,3 1,4 1,1 1,2 2,2 7,5 8,-7 1,-7 -2,0 -3,0 -4,1 z m 23,-16 c 0,0 2,5 2,5 0,0 5,-5 5,-5 0,0 -1,-1 -1,-1 0,0 -6,1 -6,1 z m -11,-8 c 1,9 -6,3 -9,5 -3,2 -2,9 -1,12 0,0 8,-1 8,-1 1,5 3,3 7,4 0,0 5,2 5,2 4,1 9,0 11,-4 0,0 -13,1 -13,1 0,0 1,-4 1,-4 0,0 -8,-1 -8,-1 0,0 0,-2 0,-2 0,0 4,-2 4,-2 0,0 -4,-3 -4,-3 4,-3 6,-2 9,-7 -4,-1 -6,-1 -10,0 z m 16,-4 c 0,0 1,9 1,9 0,0 7,-7 7,-7 0,0 -8,-2 -8,-2 z m 9,1 c 0,0 10,-3 10,-3 0,0 -1,-3 -1,-3 -7,1 -8,-1 -9,6 z m -20,-5 c 0,0 6,4 6,4 3,-4 -1,-8 -6,-4 z m 99,-89 c 0,0 -4,7 -4,7 0,0 7,-2 7,-2 0,0 -3,-5 -3,-5 z M 321,14 c 0,0 -9,6 -9,6 3,5 5,4 11,4 0,0 -2,2 -2,2 0,0 -1,0 -1,0 3,4 4,4 8,5 -4,7 -10,6 -17,9 0,0 0,2 0,2 10,4 8,6 15,-1 7,13 -3,15 4,27 0,0 2,0 2,0 0,0 2,-8 2,-8 0,0 0,-10 0,-10 0,0 3,-6 3,-6 0,0 -5,-9 -5,-9 3,-4 4,-5 5,-10 -4,2 -4,2 -8,0 -7,-3 -4,-6 -8,-11 z m 24,1 c 0,0 8,1 8,1 0,0 -2,-4 -2,-4 0,0 -6,3 -6,3 z M 336,4 c 0,0 -4,13 -4,13 0,0 7,2 7,2 0,0 -2,-7 -2,-7 0,-4 2,-4 -1,-8 z m 8,-2 c 0,0 -1,4 -1,4 0,0 4,1 4,1 0,0 -3,-5 -3,-5 z"/>
+
+                        <!-- Campbeltown 坎贝尔敦 -->
+                        <path id="Campbeltown" class="map-region" data-region="Campbeltown" d="m105,368c-5,7 -2,7 -3,12c-2,5 -4,4 -5,12c7,1 7,1 13,-4c-1,8 -19,16 -11,27c0,0 -2,2 -2,2c0,0 0,1 0,1c13,-2 12,-14 15,-19c1,-4 5,-5 4,-9c0,-3 -4,-7 -5,-10c0,-3 1,-5 1,-8c0,0 -7,-4 -7,-4z"/>
+
+                        <!-- Islay 艾雷岛 -->
+                        <path id="Islay" class="map-region" data-region="Islay" d="m 62,384 c 0,0 -8,6 -8,6 0,0 1,4 1,4 0,0 -5,5 -5,5 0,0 1,1 1,1 7,-2 16,-7 11,-16 z m -1,22 c 4,-1 4,-1 5,-5 1,0 2,1 4,0 9,0 5,-7 3,-12 0,0 -2,-6 -2,-6 -7,3 -4,5 -6,11 -2,5 -3,5 -4,12 z"/>
+
+                        <!-- Lowland 低地 -->
+                        <path id="Lowland" class="map-region" data-region="Lowland" d="m 215.55283,342.40647 c 2,1 8.44717,5.59353 10.44717,5.59353 7,-2 10,0 15,-6 l 4,1 -2,4 c 9,1 9,2 17,6 l 0,2 -11,4 c -3,1 -6,-1 -8,-1 -5,1 -9,7 -9,12 l -5,-2 -1,3 -11,-1 c -4,-1 -8,-3 -12,-1 -2,1 -4,3 -2,5 3,5 12,2 16,2 7,1 16,10 25,5 3,-2 3,-4 3,-7 l 9,-2 12,6 16,5 6,13 c -5,2 -13,8 -11,14 1,4 4,4 6,11 -15,4 -29,16 -42,25 -5,4 -5,6 -8,7 -4,2 -10,0 -14,-1 -7,-1 -7,1 -16,-3 1,4 3,11 0,14 -2,4 -7,2 -10,3 -3,1 -5,4 -7,4 -3,1 -10,0 -12,-2 -2,-1 -2,-2 -3,-4 -7,2 -4,-2 -8,-4 -2,-1 -4,0 -6,1 1,3 2,4 4,7 3,5 4,12 -5,9 -3,-1 -13,-14 -20,-11 -5,3 0,8 -1,15 -8,-3 -5,-8 -9,-13 -3,-2 -8,-2 -10,-6 -2,-4 2,-9 5,-8 2,0 5,6 6,8 1,-2 3,-4 3,-6 1,-3 -2,-6 1,-12 3,-4 7,-5 9,-8 3,-4 1,-7 3,-10 2,-2 5,-4 7,-7 5,-9 -5,-16 -11,-20 l 1,-7 c 1,-3 -1,-7 2,-9 2,-2 5,-2 7,-1 7,1 10,3 17,2 -24.82938,-11.76833 -4.60161,0.0691 16.42682,-24.57318 13.07304,-17.44717 32.12601,-18.02035 33.12601,-17.02035 z"/>
+
+                        <!-- Speyside 斯佩塞 -->
+                        <path id="Speyside" class="map-region" data-region="Speyside" d="M 265.13019,247.89434 C 258.2582,249.46865 240.6554,244.33652 237,245 c -7.71789,-3.37071 -11.34782,-2.38713 -14,-3 -6.90451,-1.20601 -28.72661,12.8511 -34.26429,15.46752 2.83945,3.24199 7.7938,6.12747 12.56979,9.20579 5.48284,3.53391 8.30549,4.87407 11.15247,10.93376 2.43558,5.18407 9.56318,8.58817 14.33305,9.73498 4.76988,1.14682 9.43778,0.81946 13.72125,-1.73207 34.44313,0.44716 28.61792,-37.71564 24.61792,-37.71564 z"/>
+
+                        <!-- Highland 高地 -->
+                        <path id="Highland" class="map-region" data-region="Highland" d="m 293,243 c 7,2 4,9 12,16 -3,6 -5,5 -7,8 l -4,10 -5,5 -5,16 c -1,2 -6,7 -8,10 -1,1 -3,5 -5,6 -1,1 -11,1 -9,7 1,1 4,3 6,4 -5,8 -10,11 -20,12 -5,0 -7,-2 -11,0 -8,2 -8.52439,7.42682 -21.52439,5.42682 -34.03739,1.83639 -28.56978,27.20614 -61.29064,34.437 L 141,375 l 1,-12 -5,0 -3,21 -4,3 c -3,-4 -5,-7 -10,-9 1,-10 6,-7 6,-14 6,-2 12,-4 10,-12 -3,1 -6,3 -9,5 -6,6 -9,15 -19,12 l 2,-5 -3,-1 c 2,-8 -3,-15 3,-20 4,-5 9,0 13,0 6,0 8,-7 9,-12 l -8,7 -4,-1 2,-9 11,-3 9,-7 c -5,0 -12,0 -16,-4 2,0 5,-1 6,-3 1,-3 -2,-8 -6,-6 -6,2 -2,8 -4,12 -3,5 -11,3 -15,11 -6,0 -15,2 -20,-3 15,-8 11,1 20,-7 -12,-5 -18,6 -31,-2 9,-3 8,-6 19,-3 l 0,-5 5,-1 c -2,-2 -1,-6 -1,-9 7,2 8,2 15,1 -7,-6 -9,1 -14,-8 l 7,-1 c 5,0 7,3 7,-6 l -4,1 -1,-7 c 4,1 4,1 8,-1 l -6,-4 c -4,-1 -6,0 -9,-4 l 15,0 c -5,-7 -8,-3 -16,-3 0,-6 -1,-7 -4,-12 10,-3 9,3 19,2 l -6,-7 -7,-6 c 7,-2 7,-6 1,-6 -3,-9 5,-6 9,-3 l -1,-10 5,5 c 4,-2 9,-5 13,-3 5,2 2,6 12,6 -5,-5 -7,-7 -13,-12 -3,-2 -6,-4 -5,-8 l 3,4 c 6,-10 5,-5 1,-15 l 9,0 11,1 -9,-12 7,1 -2,-6 c 2,-3 1,-3 -2,-5 l 0,-3 8,-6 4,6 7,-2 -3,9 c 5,-1 7,-2 9,-7 l 8,8 -1,-4 c 4,-2 13,-5 18,-6 3,0 9,2 12,1 2,0 4,-2 6,-3 6,-1 9,2 15,-5 l 7,2 10,1 c -5,4 -3,4 -1,11 l -3,0 c 1,8 -7,11 -12,15 l -8,6 -5,6 c -3,3 -7,4 -11,6 -7,3 -6,4 -15,6 l 4,7 -16,0 c 4,7 12,4 18,6 l 11,-4 c -4,7 -7,4 -7,12 -3,-1 -6,-2 -9,-2 -7,1 -5,4 -15,3 l -3,10 c 10,-2 9,-9 18,-6 -2,3 -10,11 -13,12 -3,0 -6,-2 -9,0 -1,1 -2,3 0,4 2,3 13,0 16,-1 4,-3 6.55283,-4.50404 6.55283,-4.50404 5.8472,8.03338 19.50334,10.23907 23.57252,19.91646 4.00183,9.51725 20.12789,13.68977 27.64549,8.46285 2.12365,-1.47655 4.20544,-0.34256 6.20873,-0.25774 2.00328,0.0848 3.92806,-0.87953 5.73768,-1.65843 3.61189,-1.55464 7.12104,-2.97778 9.09973,-5.09215 1.5042,-1.60734 2.63301,-2.78828 3.73714,-4.77823 1.179,-2.1249 2.35839,-3.74014 2.71511,-6.83557 0.35673,-3.09543 0.71837,-6.6515 1.00068,-10.01269 0.31078,-3.70017 -0.62442,-6.83464 -2.80449,-9.24046 0,0 20.53457,-7 27.53457,-5 z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 中间矩阵图 -->
+            <div class="matrix-wrapper">
+                <div class="matrix-container">
+                    <!-- 顶部图例 - 右对齐 -->
+                    <div class="legend-top">
+                        <div class="legend-vertical-top">
+                            <div class="legend-item-vertical">
+                                <div class="legend-dot rich"></div>
+                                <span>Rich/Intense</span>
+                            </div>
+                            <div class="legend-item-vertical">
+                                <div class="legend-dot medium"></div>
+                                <span>Medium</span>
+                            </div>
+                            <div class="legend-item-vertical">
+                                <div class="legend-dot light"></div>
+                                <span>Light</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="matrix-chart" id="matrixChart">
+                        <div class="axis-v"></div>
+                        <div class="axis-h"></div>
+
+                        <!-- 垂直线两端标签 -->
+                        <div class="axis-label-v top">Maximum Peat</div>
+                        <div class="axis-label-v bottom">Maximum Maltiness</div>
+
+                        <!-- 水平线两端标签 -->
+                        <div class="axis-label-h left">Bourbon</div>
+                        <div class="axis-label-h right">Sherry/Wine</div>
+
+                        <!-- 四个象限标签 -->
+                        <div class="quadrant-label ql-tl">Peat Monsters</div>
+                        <div class="quadrant-label ql-tr">Heavy</div>
+                        <div class="quadrant-label ql-bl">Light</div>
+                        <div class="quadrant-label ql-br">Sherry Monsters</div>
+
+                        <!-- 威士忌点将通过JS动态插入 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧详情面板 -->
+            <div class="detail-panel">
+                <div class="detail-content" id="detailContent">
+                    <!-- 动态填充 -->
+                </div>
+            </div>
+        </div>
     </div>
 
-    <h2>爱尔兰威士忌</h2>
-    <div class="table-container">
-        <table>
-            <tr>
-                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
-                <th><a href="https://en.wikipedia.org/wiki/Old_Bushmills_distillery">Bushmills<br><span class="distillery-cn">布什米尔</span></a></th>
-                <th>Green Spot<br><span class="distillery-cn">绿点</span></th>
-                <th><a href="https://en.wikipedia.org/wiki/Jameson_Irish_Whiskey">Jameson<br><span class="distillery-cn">尊美醇</span></a></th>
-                <th>Midleton<br><span class="distillery-cn">米德尔顿</span></th>
-                <th>Natterjack<br><span class="distillery-cn">奈特杰克</span></th>
-                <th>Powers<br><span class="distillery-cn">能量</span></th>
-                <th><a href="https://en.wikipedia.org/wiki/Redbreast_(whiskey)">Redbreast<br><span class="distillery-cn">知更鸟</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Teeling_Distillery">Teeling<br><span class="distillery-cn">帝霖</span></a></th>
-                <th>Tullamore D.E.W.<br><span class="distillery-cn">图拉多</span></th>
-                <th>Yellow Spot<br><span class="distillery-cn">黄点</span></th>
-                <th>Red Spot<br><span class="distillery-cn">红点</span></th>
-            </tr>
-            <tr>
-                <td><strong>集团</strong></td>
-                <td>Diageo</td>
-                <td>Mitchell & Son</td>
-                <td>Pernod Ricard</td>
-                <td>Midleton Distillery</td>
-                <td>Natterjack</td>
-                <td>Midleton Distillery</td>
-                <td>Midleton Distillery</td>
-                <td>Teeling Distillery</td>
-                <td>William Grant & Sons</td>
-                <td>Mitchell & Son</td>
-                <td>Mitchell & Son</td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Irish_whiskey">Ireland</a></strong></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Bushmills 10 布什米尔10年</li>
-                        <li>Bushmills 16 布什米尔16年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Green Spot 绿点</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Jameson Irish Whiskey 尊美醇</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Midleton Very Rare 2024 米德尔顿珍稀2024</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Natterjack Cask Strength 奈特杰克桶强 <span class="award">2024爱尔兰最佳</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Powers Gold Label 能量金标</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Redbreast 12 知更鸟12年</li>
-                        <li>Redbreast 12 Cask Strength 知更鸟12年桶强</li>
-                        <li>Redbreast 15 知更鸟15年</li>
-                        <li>Redbreast 21 知更鸟21年 <span class="award">2024 WWA最佳壶式蒸馏</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Teeling Single Grain 帝霖单一谷物</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Tullamore D.E.W. 图拉多原味</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Yellow Spot 12 黄点12年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Red Spot 15 红点15年</li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
-    </div>
+    <script>
+        // 威士忌数据
+        // 威士忌数据
+        const whiskyData = [
+        // Highland
+        { name: "Aberfeldy 12", distillery: "Aberfeldy", region: "Highland", country: "Scotland", age: 12, abv: 40, caskType: "Bourbon", x: 15, y: 72, intensity: "light", flavorTags: ["honey", "vanilla", "fruit", "smooth", "light"], group: "Bacardi" },
+        { name: "Aberlour 10", distillery: "Aberlour", region: "Highland", country: "Scotland", age: 10, abv: 40, caskType: "Bourbon + Sherry", x: 60, y: 65, intensity: "medium", flavorTags: ["fruit", "vanilla", "light sherry", "smooth"], group: "Pernod Ricard" },
+        { name: "Aberlour 12 Double Cask", distillery: "Aberlour", region: "Highland", country: "Scotland", age: 12, abv: 43, caskType: "Bourbon + Sherry", x: 62, y: 63, intensity: "medium", flavorTags: ["sherry", "fruit", "spice", "balanced"], group: "Pernod Ricard" },
+        { name: "Aberlour 12 Nonchillfiltered", distillery: "Aberlour", region: "Highland", country: "Scotland", age: 12, abv: 48, caskType: "Bourbon + Sherry", x: 64, y: 62, intensity: "rich", flavorTags: ["sherry", "thick", "spicy", "fruity"], group: "Pernod Ricard" },
+        { name: "Aberlour A'bunadh", distillery: "Aberlour", region: "Highland", country: "Scotland", age: null, abv: 60, caskType: "Oloroso Sherry Cask Strength", x: 88, y: 58, intensity: "rich", flavorTags: ["sherry", "powerful", "dried fruit", "spice"], group: "Pernod Ricard" },
+        { name: "Aberlour Casg Annamh", distillery: "Aberlour", region: "Highland", country: "Scotland", age: null, abv: 48, caskType: "Sherry", x: 70, y: 60, intensity: "rich", flavorTags: ["sherry", "fruit", "spice", "rich"], group: "Pernod Ricard" },
+        { name: "Aberlour Alba", distillery: "Aberlour", region: "Highland", country: "Scotland", age: null, abv: 40, caskType: "Bourbon", x: 12, y: 82, intensity: "light", flavorTags: ["vanilla", "light", "sweet", "floral"], group: "Pernod Ricard" },
+        { name: "AnCnoc 12", distillery: "AnCnoc", region: "Highland", country: "Scotland", age: 12, abv: 40, caskType: "Bourbon", x: 35, y: 75, intensity: "light", flavorTags: ["citrus", "honey", "light", "fruity"], group: "Inver House" },
+        { name: "AnCnoc 16", distillery: "AnCnoc", region: "Highland", country: "Scotland", age: 16, abv: 46, caskType: "Bourbon", x: 38, y: 73, intensity: "medium", flavorTags: ["vanilla", "fruit", "spice", "complex"], group: "Inver House" },
+        { name: "AnCnoc 18", distillery: "AnCnoc", region: "Highland", country: "Scotland", age: 18, abv: 46, caskType: "Bourbon", x: 58, y: 72, intensity: "medium", flavorTags: ["fruit", "spice", "oak", "complex"], group: "Inver House" },
+        // Islay
+        { name: "Ardbeg 10", distillery: "Ardbeg", region: "Islay", country: "Scotland", age: 10, abv: 46, caskType: "Bourbon", x: 40, y: 22, intensity: "rich", flavorTags: ["peat", "smoke", "citrus", "intense"], group: "LVMH" },
+        { name: "Ardbeg Corryvreckan", distillery: "Ardbeg", region: "Islay", country: "Scotland", age: null, abv: 57.1, caskType: "Bourbon + French Oak", x: 20, y: 18, intensity: "rich", flavorTags: ["peat", "pepper", "dark chocolate", "intense"], group: "LVMH" },
+        { name: "Ardbeg Uigeadail", distillery: "Ardbeg", region: "Islay", country: "Scotland", age: null, abv: 54.2, caskType: "Bourbon + Sherry", x: 70, y: 20, intensity: "rich", flavorTags: ["peat", "sherry", "smoke", "raisins"], group: "LVMH" },
+        // Highland
+        { name: "Ardmore Traditional Cask Peated", distillery: "Ardmore", region: "Highland", country: "Scotland", age: null, abv: 46, caskType: "Bourbon + Quarter Cask", x: 28, y: 35, intensity: "medium", flavorTags: ["peat", "smoke", "vanilla", "honey"], group: "Beam Suntory" },
+        // Islands
+        { name: "Arran 10", distillery: "Arran", region: "Islands", country: "Scotland", age: 10, abv: 46, caskType: "Bourbon", x: 45, y: 78, intensity: "medium", flavorTags: ["citrus", "vanilla", "apple", "fresh"], group: "Isle of Arran Distillers" },
+        { name: "Arran 14", distillery: "Arran", region: "Islands", country: "Scotland", age: 14, abv: 46, caskType: "Bourbon", x: 52, y: 70, intensity: "medium", flavorTags: ["fruit", "vanilla", "oak", "complex"], group: "Isle of Arran Distillers" },
+        { name: "Arran 18", distillery: "Arran", region: "Islands", country: "Scotland", age: 18, abv: 46, caskType: "Bourbon + Sherry", x: 78, y: 68, intensity: "medium", flavorTags: ["fruit", "sherry", "oak", "elegant"], group: "Isle of Arran Distillers" },
+        // Lowland
+        { name: "Auchentoshan 12", distillery: "Auchentoshan", region: "Lowland", country: "Scotland", age: 12, abv: 40, caskType: "Bourbon", x: 38, y: 75, intensity: "light", flavorTags: ["citrus", "vanilla", "floral", "light"], group: "Beam Suntory" },
+        { name: "Auchentoshan 18", distillery: "Auchentoshan", region: "Lowland", country: "Scotland", age: 18, abv: 43, caskType: "Bourbon", x: 42, y: 72, intensity: "medium", flavorTags: ["fruit", "oak", "spice", "refined"], group: "Beam Suntory" },
+        { name: "Auchentoshan Classic", distillery: "Auchentoshan", region: "Lowland", country: "Scotland", age: null, abv: 44, caskType: "Bourbon", x: 35, y: 80, intensity: "light", flavorTags: ["citrus", "fresh", "light", "clean"], group: "Beam Suntory" },
+        { name: "Auchentoshan Threewood", distillery: "Auchentoshan", region: "Lowland", country: "Scotland", age: null, abv: 43, caskType: "Bourbon + PX + Oloroso", x: 55, y: 68, intensity: "medium", flavorTags: ["sherry", "fruit", "oak", "sweet"], group: "Beam Suntory" },
+        { name: "Auchentoshan Valinch", distillery: "Auchentoshan", region: "Lowland", country: "Scotland", age: null, abv: 57.5, caskType: "Bourbon Cask Strength", x: 30, y: 78, intensity: "rich", flavorTags: ["citrus", "vanilla", "strong", "fresh"], group: "Beam Suntory" },
+        { name: "Auchentoshan 3 wood", distillery: "Auchentoshan", region: "Lowland", country: "Scotland", age: null, abv: 43, caskType: "Bourbon + Oloroso + PX", x: 52, y: 58, intensity: "medium", flavorTags: ["sherry", "fruit", "complex", "rich"], group: "Beam Suntory" },
+        // Highland
+        { name: "Balblair 1999", distillery: "Balblair", region: "Highland", country: "Scotland", age: null, abv: 46, caskType: "Bourbon", x: 62, y: 68, intensity: "medium", flavorTags: ["fruit", "vanilla", "spice", "elegant"], group: "Inver House" },
+        { name: "Balvenie 12", distillery: "Balvenie", region: "Highland", country: "Scotland", age: 12, abv: 40, caskType: "Bourbon", x: 48, y: 72, intensity: "medium", flavorTags: ["honey", "vanilla", "fruit", "smooth"], group: "William Grant & Sons" },
+        { name: "Balvenie 12 Double Wood", distillery: "Balvenie", region: "Highland", country: "Scotland", age: 12, abv: 43, caskType: "Bourbon + Sherry", x: 50, y: 70, intensity: "medium", flavorTags: ["honey", "sherry", "vanilla", "nutty"], group: "William Grant & Sons" },
+        { name: "Balvenie 12 Single Barrel", distillery: "Balvenie", region: "Highland", country: "Scotland", age: 12, abv: 47.8, caskType: "First-fill Bourbon", x: 42, y: 74, intensity: "medium", flavorTags: ["vanilla", "honey", "oak", "rich"], group: "William Grant & Sons" },
+        { name: "Balvenie 14 Year Caribbean Cask", distillery: "Balvenie", region: "Highland", country: "Scotland", age: 14, abv: 43, caskType: "Rum Cask Finish", x: 25, y: 73, intensity: "medium", flavorTags: ["rum", "vanilla", "tropical", "sweet"], group: "William Grant & Sons" },
+        { name: "Balvenie 15 Single Cask", distillery: "Balvenie", region: "Highland", country: "Scotland", age: 15, abv: 47.8, caskType: "Sherry Cask", x: 72, y: 64, intensity: "rich", flavorTags: ["sherry", "dried fruit", "spice", "complex"], group: "William Grant & Sons" },
+        { name: "Balvenie 15 Sherry", distillery: "Balvenie", region: "Highland", country: "Scotland", age: 15, abv: 47.8, caskType: "Sherry Cask", x: 75, y: 62, intensity: "rich", flavorTags: ["sherry", "honey", "spice", "rich"], group: "William Grant & Sons" },
+        { name: "Balvenie 17 Peated", distillery: "Balvenie", region: "Highland", country: "Scotland", age: 17, abv: 48.7, caskType: "Peated Cask", x: 48, y: 35, intensity: "rich", flavorTags: ["peat", "smoke", "vanilla", "honey"], group: "William Grant & Sons" },
+        { name: "Balvenie 21 Portwood", distillery: "Balvenie", region: "Highland", country: "Scotland", age: 21, abv: 40, caskType: "Port Cask", x: 68, y: 64, intensity: "rich", flavorTags: ["port", "fruit", "oak", "elegant"], group: "William Grant & Sons" },
+        // Speyside
+        { name: "Benriach 12", distillery: "Benriach", region: "Speyside", country: "Scotland", age: 12, abv: 46, caskType: "Bourbon + Sherry", x: 55, y: 70, intensity: "medium", flavorTags: ["fruit", "honey", "vanilla", "balanced"], group: "Brown-Forman" },
+        { name: "Benriach 16", distillery: "Benriach", region: "Speyside", country: "Scotland", age: 16, abv: 43, caskType: "Bourbon + Sherry", x: 62, y: 65, intensity: "medium", flavorTags: ["fruit", "spice", "oak", "complex"], group: "Brown-Forman" },
+        { name: "Benromach 10", distillery: "Benromach", region: "Speyside", country: "Scotland", age: 10, abv: 43, caskType: "Bourbon + Sherry", x: 38, y: 45, intensity: "medium", flavorTags: ["light smoke", "fruit", "vanilla", "balanced"], group: "Gordon & MacPhail" },
+        { name: "Benromach Peatsmoke", distillery: "Benromach", region: "Speyside", country: "Scotland", age: null, abv: 46, caskType: "Bourbon", x: 25, y: 25, intensity: "rich", flavorTags: ["peat", "smoke", "vanilla", "medicinal"], group: "Gordon & MacPhail" },
+        // Others
+        { name: "Black Bottle", distillery: "Black Bottle", region: "Others", country: "Scotland", age: null, abv: 40, caskType: "Blended", x: 35, y: 55, intensity: "light", flavorTags: ["smoke", "malt", "light", "smooth"], group: "Burn Stewart" },
+        { name: "Black Grouse", distillery: "Black Grouse", region: "Others", country: "Scotland", age: null, abv: 40, caskType: "Blended", x: 40, y: 50, intensity: "medium", flavorTags: ["smoke", "peat", "fruit", "smooth"], group: "Edrington" },
+        // Islay
+        { name: "Bowmore 12", distillery: "Bowmore", region: "Islay", country: "Scotland", age: 12, abv: 40, caskType: "Bourbon + Sherry", x: 58, y: 42, intensity: "medium", flavorTags: ["light peat", "citrus", "honey", "salt"], group: "Beam Suntory" },
+        { name: "Bowmore 15", distillery: "Bowmore", region: "Islay", country: "Scotland", age: 15, abv: 43, caskType: "Sherry Cask", x: 60, y: 38, intensity: "medium", flavorTags: ["peat", "sherry", "fruit", "smoke"], group: "Beam Suntory" },
+        { name: "Bowmore 18", distillery: "Bowmore", region: "Islay", country: "Scotland", age: 18, abv: 43, caskType: "Sherry Cask", x: 78, y: 35, intensity: "rich", flavorTags: ["peat", "sherry", "dark chocolate", "complex"], group: "Beam Suntory" },
+        { name: "Bowmore Legend", distillery: "Bowmore", region: "Islay", country: "Scotland", age: null, abv: 40, caskType: "Bourbon", x: 32, y: 45, intensity: "light", flavorTags: ["light peat", "vanilla", "honey", "fresh"], group: "Beam Suntory" },
+        { name: "Bowmore Tempest", distillery: "Bowmore", region: "Islay", country: "Scotland", age: null, abv: 55, caskType: "Bourbon Cask Strength", x: 45, y: 38, intensity: "rich", flavorTags: ["peat", "salt", "vanilla", "powerful"], group: "Beam Suntory" },
+        { name: "Bruichladdich Islay", distillery: "Bruichladdich", region: "Islay", country: "Scotland", age: null, abv: 50, caskType: "Bourbon", x: 15, y: 85, intensity: "medium", flavorTags: ["malt", "fruit", "sea salt", "fresh"], group: "Remy Cointreau" },
+        { name: "Bruichladdich Laddie Ten", distillery: "Bruichladdich", region: "Islay", country: "Scotland", age: 10, abv: 50, caskType: "Bourbon", x: 18, y: 82, intensity: "medium", flavorTags: ["malt", "fruit", "vanilla", "coastal"], group: "Remy Cointreau" },
+        { name: "Bruichladdich Laddie", distillery: "Bruichladdich", region: "Islay", country: "Scotland", age: null, abv: 50, caskType: "Bourbon", x: 16, y: 83, intensity: "medium", flavorTags: ["malt", "apple", "floral", "fresh"], group: "Remy Cointreau" },
+        { name: "Bruichladdich Octomore", distillery: "Bruichladdich", region: "Islay", country: "Scotland", age: null, abv: 60, caskType: "Bourbon", x: 25, y: 12, intensity: "rich", flavorTags: ["peat", "smoke", "intense", "powerful"], group: "Remy Cointreau" },
+        { name: "Bruichladdich PC (Port Charlotte)", distillery: "Bruichladdich", region: "Islay", country: "Scotland", age: null, abv: 50, caskType: "Bourbon + Sherry", x: 60, y: 25, intensity: "rich", flavorTags: ["peat", "smoke", "fruit", "complex"], group: "Remy Cointreau" },
+        { name: "Bruichladdich Rocks", distillery: "Bruichladdich", region: "Islay", country: "Scotland", age: null, abv: 46, caskType: "Bourbon", x: 35, y: 78, intensity: "light", flavorTags: ["light", "fruit", "floral", "fresh"], group: "Remy Cointreau" },
+        { name: "Bruichladdich Waves", distillery: "Bruichladdich", region: "Islay", country: "Scotland", age: null, abv: 46, caskType: "Bourbon", x: 20, y: 80, intensity: "light", flavorTags: ["vanilla", "fruit", "sweet", "light"], group: "Remy Cointreau" },
+        { name: "Bunnahabhain 12", distillery: "Bunnahabhain", region: "Islay", country: "Scotland", age: 12, abv: 46.3, caskType: "Bourbon + Sherry", x: 85, y: 65, intensity: "medium", flavorTags: ["nutty", "sherry", "sea salt", "caramel"], group: "Distell" },
+        { name: "Bunnahabhain 18", distillery: "Bunnahabhain", region: "Islay", country: "Scotland", age: 18, abv: 46.3, caskType: "Sherry Cask", x: 88, y: 60, intensity: "rich", flavorTags: ["sherry", "dried fruit", "nutty", "complex"], group: "Distell" },
+        { name: "Bunnahabhain 25", distillery: "Bunnahabhain", region: "Islay", country: "Scotland", age: 25, abv: 46.3, caskType: "Sherry Cask", x: 90, y: 55, intensity: "rich", flavorTags: ["sherry", "dark chocolate", "oak", "luxury"], group: "Distell" },
+        { name: "Bunnahabhain 12 CS", distillery: "Bunnahabhain", region: "Islay", country: "Scotland", age: 12, abv: 55, caskType: "Sherry Cask Strength", x: 92, y: 62, intensity: "rich", flavorTags: ["sherry", "powerful", "nutty", "intense"], group: "Distell" },
+        { name: "Bunnahabhain Manzanilla", distillery: "Bunnahabhain", region: "Islay", country: "Scotland", age: null, abv: 46, caskType: "Manzanilla Sherry", x: 85, y: 63, intensity: "medium", flavorTags: ["sherry", "sea salt", "dry", "nutty"], group: "Distell" },
+        { name: "Bunnahabhain Toiteach", distillery: "Bunnahabhain", region: "Islay", country: "Scotland", age: null, abv: 46, caskType: "Bourbon", x: 55, y: 28, intensity: "medium", flavorTags: ["light peat", "smoke", "vanilla", "balanced"], group: "Distell" },
+        { name: "Caol Ila 12", distillery: "Caol Ila", region: "Islay", country: "Scotland", age: 12, abv: 43, caskType: "Bourbon", x: 35, y: 28, intensity: "medium", flavorTags: ["smoke", "sea salt", "citrus", "clean"], group: "Diageo" },
+        // Others
+        { name: "Chivas Regal 12", distillery: "Chivas Regal", region: "Others", country: "Scotland", age: 12, abv: 40, caskType: "Blended", x: 45, y: 68, intensity: "medium", flavorTags: ["fruit", "honey", "vanilla", "smooth"], group: "Pernod Ricard" },
+        // Highland
+        { name: "Clynelish 14", distillery: "Clynelish", region: "Highland", country: "Scotland", age: 14, abv: 46, caskType: "Bourbon", x: 15, y: 88, intensity: "medium", flavorTags: ["waxy", "coastal", "fruity", "spicy"], group: "Diageo" },
+        // Others
+        { name: "Compass Box Orchard", distillery: "Compass Box", region: "Others", country: "Scotland", age: null, abv: 46, caskType: "Blended Malt", x: 25, y: 78, intensity: "light", flavorTags: ["fruit", "apple", "fresh", "light"], group: "Independent" },
+        { name: "Compass Box Peat", distillery: "Compass Box", region: "Others", country: "Scotland", age: null, abv: 46, caskType: "Blended Malt", x: 35, y: 45, intensity: "medium", flavorTags: ["peat", "smoke", "fruit", "balanced"], group: "Independent" },
+        // Speyside
+        { name: "Cragganmore 12", distillery: "Cragganmore", region: "Speyside", country: "Scotland", age: 12, abv: 40, caskType: "Bourbon", x: 15, y: 70, intensity: "medium", flavorTags: ["honey", "floral", "herbal", "complex"], group: "Diageo" },
+        { name: "Cragganmore Distillers Edition", distillery: "Cragganmore", region: "Speyside", country: "Scotland", age: null, abv: 40, caskType: "Sherry Finish", x: 68, y: 68, intensity: "medium", flavorTags: ["sherry", "fruit", "spice", "rich"], group: "Diageo" },
+        { name: "Craigellachie 13", distillery: "Craigellachie", region: "Speyside", country: "Scotland", age: 13, abv: 46, caskType: "Bourbon", x: 55, y: 78, intensity: "medium", flavorTags: ["fruit", "meaty", "sulphur", "complex"], group: "Bacardi" },
+        // Others
+        { name: "Cutty Sark", distillery: "Cutty Sark", region: "Others", country: "Scotland", age: null, abv: 40, caskType: "Blended", x: 28, y: 75, intensity: "light", flavorTags: ["light", "citrus", "grain", "smooth"], group: "Edrington" },
+        // Highland
+        { name: "Dalmore 12", distillery: "Dalmore", region: "Highland", country: "Scotland", age: 12, abv: 40, caskType: "Bourbon + Sherry", x: 75, y: 66, intensity: "medium", flavorTags: ["chocolate", "orange", "sherry", "rich"], group: "Whyte & Mackay" },
+        { name: "Dalmore 12 Sherry", distillery: "Dalmore", region: "Highland", country: "Scotland", age: 12, abv: 40, caskType: "Sherry", x: 78, y: 64, intensity: "rich", flavorTags: ["sherry", "fruit", "spice", "rich"], group: "Whyte & Mackay" },
+        { name: "Dalwhinnie 15", distillery: "Dalwhinnie", region: "Highland", country: "Scotland", age: 15, abv: 43, caskType: "Bourbon", x: 12, y: 75, intensity: "light", flavorTags: ["honey", "heather", "vanilla", "gentle"], group: "Diageo" },
+        { name: "Deanston 12", distillery: "Deanston", region: "Highland", country: "Scotland", age: 12, abv: 46.3, caskType: "Bourbon", x: 8, y: 88, intensity: "light", flavorTags: ["honey", "citrus", "malty", "fresh"], group: "Distell" },
+        { name: "Deanston 18", distillery: "Deanston", region: "Highland", country: "Scotland", age: 18, abv: 46.3, caskType: "Bourbon", x: 5, y: 92, intensity: "medium", flavorTags: ["fruit", "spice", "oak", "rich"], group: "Distell" },
+        { name: "Deanston 20", distillery: "Deanston", region: "Highland", country: "Scotland", age: 20, abv: 55, caskType: "Sherry Cask Strength", x: 88, y: 62, intensity: "rich", flavorTags: ["sherry", "powerful", "spice", "intense"], group: "Distell" },
+        // Others
+        { name: "Dewars White Label", distillery: "Dewars", region: "Others", country: "Scotland", age: null, abv: 40, caskType: "Blended", x: 32, y: 72, intensity: "light", flavorTags: ["light", "honey", "fruit", "smooth"], group: "Bacardi" },
+        { name: "Famous Grouse", distillery: "Famous Grouse", region: "Others", country: "Scotland", age: null, abv: 40, caskType: "Blended", x: 38, y: 70, intensity: "light", flavorTags: ["fruit", "malt", "smooth", "easy"], group: "Edrington" },
+        // Islay
+        { name: "Finlaggan Old Reserve", distillery: "Finlaggan", region: "Islay", country: "Scotland", age: null, abv: 40, caskType: "Bourbon", x: 28, y: 20, intensity: "medium", flavorTags: ["peat", "smoke", "salt", "young"], group: "Independent" },
+        // Campbeltown
+        { name: "Glen Scotia 15", distillery: "Glen Scotia", region: "Campbeltown", country: "Scotland", age: 15, abv: 46, caskType: "Bourbon", x: 35, y: 40, intensity: "medium", flavorTags: ["fruit", "vanilla", "light smoke", "complex"], group: "Loch Lomond Group" },
+        { name: "Glen Scotia 18", distillery: "Glen Scotia", region: "Campbeltown", country: "Scotland", age: 18, abv: 46, caskType: "Sherry", x: 78, y: 38, intensity: "rich", flavorTags: ["sherry", "fruit", "oak", "elegant"], group: "Loch Lomond Group" },
+        { name: "Glen Scotia DC", distillery: "Glen Scotia", region: "Campbeltown", country: "Scotland", age: null, abv: 46, caskType: "Double Cask", x: 75, y: 40, intensity: "medium", flavorTags: ["sherry", "fruit", "vanilla", "balanced"], group: "Loch Lomond Group" },
+        { name: "Glen Scotia Victoriana", distillery: "Glen Scotia", region: "Campbeltown", country: "Scotland", age: null, abv: 51.5, caskType: "Sherry Cask Strength", x: 45, y: 45, intensity: "rich", flavorTags: ["sherry", "dark chocolate", "spice", "intense"], group: "Loch Lomond Group" },
+        // Highland
+        { name: "Glendronach 12", distillery: "Glendronach", region: "Highland", country: "Scotland", age: 12, abv: 43, caskType: "PX + Oloroso Sherry", x: 82, y: 66, intensity: "rich", flavorTags: ["sherry", "ginger", "fruit cake", "rich"], group: "Brown-Forman" },
+        { name: "Glendronach 15", distillery: "Glendronach", region: "Highland", country: "Scotland", age: 15, abv: 46, caskType: "Oloroso Sherry", x: 85, y: 64, intensity: "rich", flavorTags: ["sherry", "chocolate", "dried fruit", "rich"], group: "Brown-Forman" },
+        { name: "Glendronach 18", distillery: "Glendronach", region: "Highland", country: "Scotland", age: 18, abv: 46, caskType: "Oloroso Sherry", x: 92, y: 58, intensity: "rich", flavorTags: ["sherry", "coffee", "dark chocolate", "intense"], group: "Brown-Forman" },
+        { name: "Glenfarclas 10", distillery: "Glenfarclas", region: "Highland", country: "Scotland", age: 10, abv: 40, caskType: "Sherry", x: 72, y: 70, intensity: "medium", flavorTags: ["sherry", "fruit", "light", "fresh"], group: "J. & G. Grant" },
+        { name: "Glenfarclas 12", distillery: "Glenfarclas", region: "Highland", country: "Scotland", age: 12, abv: 43, caskType: "Sherry", x: 75, y: 68, intensity: "medium", flavorTags: ["sherry", "fruity", "spicy", "classic"], group: "J. & G. Grant" },
+        { name: "Glenfarclas 15", distillery: "Glenfarclas", region: "Highland", country: "Scotland", age: 15, abv: 46, caskType: "Sherry", x: 78, y: 66, intensity: "rich", flavorTags: ["sherry", "dried fruit", "spice", "complex"], group: "J. & G. Grant" },
+        { name: "Glenfarclas 17", distillery: "Glenfarclas", region: "Highland", country: "Scotland", age: 17, abv: 43, caskType: "Sherry", x: 80, y: 65, intensity: "rich", flavorTags: ["sherry", "oak", "spice", "elegant"], group: "J. & G. Grant" },
+        { name: "Glenfarclas 21", distillery: "Glenfarclas", region: "Highland", country: "Scotland", age: 21, abv: 43, caskType: "Sherry", x: 82, y: 62, intensity: "rich", flavorTags: ["sherry", "dried fruit", "oak", "elegant"], group: "J. & G. Grant" },
+        { name: "Glenfarclas 30", distillery: "Glenfarclas", region: "Highland", country: "Scotland", age: 30, abv: 43, caskType: "Sherry", x: 85, y: 60, intensity: "rich", flavorTags: ["sherry", "old oak", "complex", "luxury"], group: "J. & G. Grant" },
+        { name: "Glenfarclas 105", distillery: "Glenfarclas", region: "Highland", country: "Scotland", age: null, abv: 60, caskType: "Sherry Cask Strength", x: 75, y: 72, intensity: "rich", flavorTags: ["sherry", "powerful", "spicy", "hot"], group: "J. & G. Grant" },
+        { name: "Glenfiddich 12", distillery: "Glenfiddich", region: "Highland", country: "Scotland", age: 12, abv: 40, caskType: "Bourbon + Sherry", x: 12, y: 74, intensity: "light", flavorTags: ["pear", "floral", "fresh", "light"], group: "William Grant & Sons" },
+        { name: "Glenfiddich 15", distillery: "Glenfiddich", region: "Highland", country: "Scotland", age: 15, abv: 40, caskType: "Solera", x: 15, y: 72, intensity: "medium", flavorTags: ["honey", "vanilla", "spice", "smooth"], group: "William Grant & Sons" },
+        { name: "Glenfiddich 18", distillery: "Glenfiddich", region: "Highland", country: "Scotland", age: 18, abv: 40, caskType: "Bourbon + Sherry", x: 32, y: 68, intensity: "medium", flavorTags: ["apple", "wood", "spice", "mature"], group: "William Grant & Sons" },
+        { name: "Glengoyne 10", distillery: "Glengoyne", region: "Highland", country: "Scotland", age: 10, abv: 40, caskType: "Bourbon + Sherry", x: 55, y: 74, intensity: "light", flavorTags: ["fruit", "apple", "light sherry", "fresh"], group: "Ian MacLeod" },
+        { name: "Glengoyne 18", distillery: "Glengoyne", region: "Highland", country: "Scotland", age: 18, abv: 43, caskType: "Sherry", x: 82, y: 70, intensity: "medium", flavorTags: ["sherry", "fruit", "spice", "rich"], group: "Ian MacLeod" },
+        { name: "Glengoyne 21", distillery: "Glengoyne", region: "Highland", country: "Scotland", age: 21, abv: 43, caskType: "Sherry", x: 88, y: 66, intensity: "rich", flavorTags: ["sherry", "dried fruit", "oak", "elegant"], group: "Ian MacLeod" },
+        { name: "Glengoyne 25", distillery: "Glengoyne", region: "Highland", country: "Scotland", age: 25, abv: 48, caskType: "Sherry", x: 92, y: 62, intensity: "rich", flavorTags: ["sherry", "complex", "oak", "luxury"], group: "Ian MacLeod" },
+        // Lowland
+        { name: "Glenkinchie 12", distillery: "Glenkinchie", region: "Lowland", country: "Scotland", age: 12, abv: 43, caskType: "Bourbon", x: 12, y: 68, intensity: "light", flavorTags: ["floral", "vanilla", "light", "fresh"], group: "Diageo" },
+        // Speyside
+        { name: "Glenlivet 12", distillery: "Glenlivet", region: "Speyside", country: "Scotland", age: 12, abv: 40, caskType: "Bourbon", x: 10, y: 72, intensity: "light", flavorTags: ["floral", "vanilla", "honey", "pear"], group: "Pernod Ricard" },
+        { name: "Glenlivet 15", distillery: "Glenlivet", region: "Speyside", country: "Scotland", age: 15, abv: 40, caskType: "French Oak", x: 15, y: 70, intensity: "light", flavorTags: ["fruit", "spice", "oak", "rich"], group: "Pernod Ricard" },
+        { name: "Glenlivet 18", distillery: "Glenlivet", region: "Speyside", country: "Scotland", age: 18, abv: 43, caskType: "Bourbon + Sherry", x: 30, y: 66, intensity: "medium", flavorTags: ["oak", "spice", "citrus", "balanced"], group: "Pernod Ricard" },
+        { name: "Glenlivet Captain's Reserve", distillery: "Glenlivet", region: "Speyside", country: "Scotland", age: null, abv: 40, caskType: "Rum Cask Finish", x: 22, y: 70, intensity: "medium", flavorTags: ["rum", "tropical", "vanilla", "sweet"], group: "Pernod Ricard" },
+        { name: "Glenlivet Archive 21", distillery: "Glenlivet", region: "Speyside", country: "Scotland", age: 21, abv: 43, caskType: "Sherry", x: 70, y: 65, intensity: "rich", flavorTags: ["sherry", "dried fruit", "oak", "complex"], group: "Pernod Ricard" },
+        { name: "Glenlivet Illicit", distillery: "Glenlivet", region: "Speyside", country: "Scotland", age: null, abv: 48, caskType: "Bourbon Cask Strength", x: 18, y: 75, intensity: "rich", flavorTags: ["fruit", "powerful", "spice", "intense"], group: "Pernod Ricard" },
+        { name: "Glenlivet Nadurra", distillery: "Glenlivet", region: "Speyside", country: "Scotland", age: null, abv: 48, caskType: "Bourbon Cask Strength", x: 20, y: 74, intensity: "rich", flavorTags: ["fruit", "vanilla", "strong", "fresh"], group: "Pernod Ricard" },
+        // Highland
+        { name: "Glenmorangie 10", distillery: "Glenmorangie", region: "Highland", country: "Scotland", age: 10, abv: 40, caskType: "Bourbon", x: 8, y: 76, intensity: "light", flavorTags: ["citrus", "vanilla", "peach", "delicate"], group: "LVMH" },
+        { name: "Glenmorangie 12", distillery: "Glenmorangie", region: "Highland", country: "Scotland", age: 12, abv: 43, caskType: "Bourbon + Sherry", x: 75, y: 68, intensity: "medium", flavorTags: ["fruit", "sherry", "vanilla", "smooth"], group: "LVMH" },
+        { name: "Glenmorangie 14", distillery: "Glenmorangie", region: "Highland", country: "Scotland", age: 14, abv: 46, caskType: "Port Cask", x: 82, y: 63, intensity: "medium", flavorTags: ["port", "chocolate", "mint", "elegant"], group: "LVMH" },
+        { name: "Glenmorangie 18", distillery: "Glenmorangie", region: "Highland", country: "Scotland", age: 18, abv: 43, caskType: "Bourbon + Sherry", x: 20, y: 72, intensity: "medium", flavorTags: ["fruit", "honey", "oak", "complex"], group: "LVMH" },
+        { name: "Glenmorangie Artien", distillery: "Glenmorangie", region: "Highland", country: "Scotland", age: null, abv: 46, caskType: "Bourbon", x: 8, y: 85, intensity: "medium", flavorTags: ["citrus", "vanilla", "creamy", "smooth"], group: "LVMH" },
+        { name: "Glenmorangie Lasanta", distillery: "Glenmorangie", region: "Highland", country: "Scotland", age: 12, abv: 43, caskType: "Sherry Finish", x: 72, y: 72, intensity: "medium", flavorTags: ["sherry", "raisins", "walnut", "sweet"], group: "LVMH" },
+        { name: "Glenmorangie Nectar D'or", distillery: "Glenmorangie", region: "Highland", country: "Scotland", age: 12, abv: 46, caskType: "Sauternes Finish", x: 70, y: 74, intensity: "medium", flavorTags: ["sweet wine", "vanilla", "honey", "luxury"], group: "LVMH" },
+        { name: "Glenmorangie Original", distillery: "Glenmorangie", region: "Highland", country: "Scotland", age: 10, abv: 40, caskType: "Bourbon", x: 8, y: 78, intensity: "light", flavorTags: ["citrus", "vanilla", "floral", "light"], group: "LVMH" },
+        { name: "Glenmorangie Quinta Ruban", distillery: "Glenmorangie", region: "Highland", country: "Scotland", age: 14, abv: 46, caskType: "Port Cask", x: 80, y: 68, intensity: "medium", flavorTags: ["port", "dark chocolate", "mint", "berries"], group: "LVMH" },
+        // Speyside
+        { name: "Glenrothes Select Reserve", distillery: "Glenrothes", region: "Speyside", country: "Scotland", age: null, abv: 43, caskType: "Sherry", x: 72, y: 70, intensity: "medium", flavorTags: ["sherry", "fruit", "spice", "smooth"], group: "Edrington" },
+        // Campbeltown
+        { name: "Hazelburn 10", distillery: "Hazelburn", region: "Campbeltown", country: "Scotland", age: 10, abv: 46, caskType: "Bourbon", x: 8, y: 80, intensity: "medium", flavorTags: ["malt", "fruit", "light", "fresh"], group: "Springbank" },
+        { name: "Hazelburn 12", distillery: "Hazelburn", region: "Campbeltown", country: "Scotland", age: 12, abv: 46, caskType: "Bourbon", x: 10, y: 78, intensity: "medium", flavorTags: ["malt", "fruit", "complex", "smooth"], group: "Springbank" },
+        { name: "Hazelburn 14", distillery: "Hazelburn", region: "Campbeltown", country: "Scotland", age: 14, abv: 46, caskType: "Sherry", x: 78, y: 64, intensity: "rich", flavorTags: ["sherry", "malt", "fruit", "complex"], group: "Springbank" },
+        // Islands
+        { name: "Highland Park 12", distillery: "Highland Park", region: "Islands", country: "Scotland", age: 12, abv: 43, caskType: "Bourbon + Sherry", x: 75, y: 35, intensity: "medium", flavorTags: ["honey", "peat", "sherry", "heather"], group: "Edrington" },
+        { name: "Highland Park 15", distillery: "Highland Park", region: "Islands", country: "Scotland", age: 15, abv: 44, caskType: "Bourbon + Sherry", x: 78, y: 32, intensity: "medium", flavorTags: ["honey", "peat", "dried fruit", "complex"], group: "Edrington" },
+        { name: "Highland Park 18", distillery: "Highland Park", region: "Islands", country: "Scotland", age: 18, abv: 43, caskType: "Bourbon + Sherry", x: 80, y: 30, intensity: "rich", flavorTags: ["honey", "peat", "oak", "complex"], group: "Edrington" },
+        { name: "Highland Park 25", distillery: "Highland Park", region: "Islands", country: "Scotland", age: 25, abv: 45.7, caskType: "Sherry", x: 85, y: 28, intensity: "rich", flavorTags: ["peat", "sherry", "spice", "luxury"], group: "Edrington" },
+        { name: "Highland Park Full Volume", distillery: "Highland Park", region: "Islands", country: "Scotland", age: null, abv: 47.2, caskType: "Bourbon", x: 12, y: 28, intensity: "rich", flavorTags: ["peat", "vanilla", "fruit", "strong"], group: "Edrington" },
+        { name: "Isle of Skye 8", distillery: "Isle of Skye", region: "Islands", country: "Scotland", age: 8, abv: 40, caskType: "Blended", x: 45, y: 55, intensity: "light", flavorTags: ["smoke", "malt", "light", "sweet"], group: "Ian MacLeod" },
+        // Others
+        { name: "Johnnie Walker Black", distillery: "Johnnie Walker", region: "Others", country: "Scotland", age: 12, abv: 40, caskType: "Blended", x: 50, y: 52, intensity: "medium", flavorTags: ["smoke", "vanilla", "dried fruit", "smooth"], group: "Diageo" },
+        { name: "Johnnie Walker Blue", distillery: "Johnnie Walker", region: "Others", country: "Scotland", age: null, abv: 40, caskType: "Blended", x: 55, y: 50, intensity: "rich", flavorTags: ["honey", "vanilla", "oak", "luxury"], group: "Diageo" },
+        { name: "Johnnie Walker Double Black", distillery: "Johnnie Walker", region: "Others", country: "Scotland", age: null, abv: 40, caskType: "Blended", x: 48, y: 48, intensity: "medium", flavorTags: ["smoke", "peat", "spice", "rich"], group: "Diageo" },
+        { name: "Johnnie Walker Gold", distillery: "Johnnie Walker", region: "Others", country: "Scotland", age: null, abv: 40, caskType: "Blended", x: 52, y: 55, intensity: "medium", flavorTags: ["honey", "fruit", "vanilla", "smooth"], group: "Diageo" },
+        { name: "Johnnie Walker Green", distillery: "Johnnie Walker", region: "Others", country: "Scotland", age: 15, abv: 43, caskType: "Blended Malt", x: 30, y: 40, intensity: "medium", flavorTags: ["malt", "smoke", "fruit", "complex"], group: "Diageo" },
+        { name: "Johnnie Walker Red", distillery: "Johnnie Walker", region: "Others", country: "Scotland", age: null, abv: 40, caskType: "Blended", x: 35, y: 70, intensity: "light", flavorTags: ["light", "fruit", "grain", "mix"], group: "Diageo" },
+        { name: "Johnnie Walker Swing", distillery: "Johnnie Walker", region: "Others", country: "Scotland", age: null, abv: 43, caskType: "Blended", x: 40, y: 60, intensity: "medium", flavorTags: ["fruit", "spice", "smooth", "balanced"], group: "Diageo" },
+        { name: "JW Green", distillery: "Johnnie Walker", region: "Others", country: "Scotland", age: null, abv: 43, caskType: "Blended Malt", x: 32, y: 42, intensity: "medium", flavorTags: ["smoke", "malt", "fruit", "complex"], group: "Diageo" },
+        // Islands
+        { name: "Jura 10", distillery: "Jura", region: "Islands", country: "Scotland", age: 10, abv: 40, caskType: "Bourbon", x: 28, y: 75, intensity: "light", flavorTags: ["light peat", "fruit", "citrus", "unusual"], group: "Whyte & Mackay" },
+        { name: "Jura Prophecy", distillery: "Jura", region: "Islands", country: "Scotland", age: null, abv: 46, caskType: "Sherry", x: 70, y: 30, intensity: "rich", flavorTags: ["peat", "sherry", "spice", "intense"], group: "Whyte & Mackay" },
+        { name: "Jura Superstition", distillery: "Jura", region: "Islands", country: "Scotland", age: null, abv: 43, caskType: "Bourbon + Sherry", x: 45, y: 58, intensity: "medium", flavorTags: ["light peat", "honey", "mysterious", "unique"], group: "Whyte & Mackay" },
+        // Others
+        { name: "Kavalan Solist Sherry", distillery: "Kavalan", region: "Others", country: "Taiwan", age: null, abv: 58.6, caskType: "Sherry Cask Strength", x: 95, y: 60, intensity: "rich", flavorTags: ["sherry", "tropical", "intense", "unique"], group: "King Car Group" },
+        // Campbeltown
+        { name: "Kilkerran 8", distillery: "Kilkerran", region: "Campbeltown", country: "Scotland", age: 8, abv: 55, caskType: "Sherry Cask Strength", x: 92, y: 25, intensity: "rich", flavorTags: ["sherry", "peat", "powerful", "young"], group: "Mitchell's Glengyle" },
+        { name: "Kilkerran 12", distillery: "Kilkerran", region: "Campbeltown", country: "Scotland", age: 12, abv: 46, caskType: "Bourbon + Sherry", x: 70, y: 42, intensity: "medium", flavorTags: ["fruit", "light smoke", "complex", "balanced"], group: "Mitchell's Glengyle" },
+        { name: "Kilkerran 16", distillery: "Kilkerran", region: "Campbeltown", country: "Scotland", age: 16, abv: 46, caskType: "Sherry", x: 55, y: 35, intensity: "medium", flavorTags: ["sherry", "fruit", "spice", "mature"], group: "Mitchell's Glengyle" },
+        { name: "Kilkerran Peated", distillery: "Kilkerran", region: "Campbeltown", country: "Scotland", age: null, abv: 46, caskType: "Peated", x: 68, y: 22, intensity: "rich", flavorTags: ["peat", "smoke", "fruit", "complex"], group: "Mitchell's Glengyle" },
+        // Islay
+        { name: "Kilchoman Machir", distillery: "Kilchoman", region: "Islay", country: "Scotland", age: null, abv: 46, caskType: "Bourbon", x: 38, y: 28, intensity: "medium", flavorTags: ["peat", "fruit", "vanilla", "young"], group: "Independent" },
+        { name: "Kilchoman Peated Releases", distillery: "Kilchoman", region: "Islay", country: "Scotland", age: null, abv: 50, caskType: "Bourbon", x: 35, y: 25, intensity: "rich", flavorTags: ["peat", "smoke", "medicinal", "intense"], group: "Independent" },
+        { name: "Kilchoman Sanaig", distillery: "Kilchoman", region: "Islay", country: "Scotland", age: null, abv: 46, caskType: "Sherry", x: 58, y: 28, intensity: "medium", flavorTags: ["peat", "sherry", "fruit", "balanced"], group: "Independent" },
+        { name: "Lagavulin 12", distillery: "Lagavulin", region: "Islay", country: "Scotland", age: 12, abv: 57.8, caskType: "Bourbon Cask Strength", x: 15, y: 15, intensity: "rich", flavorTags: ["peat", "smoke", "salt", "powerful"], group: "Diageo" },
+        { name: "Lagavulin 16", distillery: "Lagavulin", region: "Islay", country: "Scotland", age: 16, abv: 43, caskType: "Bourbon + Sherry", x: 50, y: 25, intensity: "rich", flavorTags: ["peat", "smoke", "sherry", "classic"], group: "Diageo" },
+        { name: "Lagavulin Distillers Edition", distillery: "Lagavulin", region: "Islay", country: "Scotland", age: null, abv: 43, caskType: "Sherry Finish", x: 68, y: 22, intensity: "rich", flavorTags: ["peat", "sherry", "fruit", "dried fruit"], group: "Diageo" },
+        { name: "Laphroaig 10", distillery: "Laphroaig", region: "Islay", country: "Scotland", age: 10, abv: 40, caskType: "Bourbon", x: 32, y: 20, intensity: "rich", flavorTags: ["peat", "smoke", "medicinal", "salt"], group: "Beam Suntory" },
+        { name: "Laphroaig 10 CS", distillery: "Laphroaig", region: "Islay", country: "Scotland", age: 10, abv: 55, caskType: "Bourbon Cask Strength", x: 38, y: 18, intensity: "rich", flavorTags: ["peat", "powerful", "smoke", "intense"], group: "Beam Suntory" },
+        { name: "Laphroaig 10 Sherry", distillery: "Laphroaig", region: "Islay", country: "Scotland", age: null, abv: 48, caskType: "Sherry", x: 85, y: 22, intensity: "rich", flavorTags: ["peat", "sherry", "smoke", "fruit"], group: "Beam Suntory" },
+        { name: "Laphroaig 15", distillery: "Laphroaig", region: "Islay", country: "Scotland", age: 15, abv: 43, caskType: "Bourbon", x: 35, y: 22, intensity: "rich", flavorTags: ["peat", "smoke", "oak", "complex"], group: "Beam Suntory" },
+        { name: "Laphroaig 18", distillery: "Laphroaig", region: "Islay", country: "Scotland", age: 18, abv: 48, caskType: "Bourbon", x: 75, y: 25, intensity: "rich", flavorTags: ["peat", "smoke", "oak", "elegant"], group: "Beam Suntory" },
+        { name: "Laphroaig 25", distillery: "Laphroaig", region: "Islay", country: "Scotland", age: 25, abv: 48.6, caskType: "Bourbon + Sherry", x: 82, y: 20, intensity: "rich", flavorTags: ["peat", "sherry", "old", "complex"], group: "Beam Suntory" },
+        { name: "Laphroaig Cask Strength 10", distillery: "Laphroaig", region: "Islay", country: "Scotland", age: 10, abv: 55, caskType: "Bourbon", x: 36, y: 16, intensity: "rich", flavorTags: ["peat", "powerful", "smoke", "hot"], group: "Beam Suntory" },
+        { name: "Laphroaig Quarter Cask", distillery: "Laphroaig", region: "Islay", country: "Scotland", age: null, abv: 48, caskType: "Quarter Cask", x: 30, y: 18, intensity: "rich", flavorTags: ["peat", "vanilla", "oak", "intense"], group: "Beam Suntory" },
+        { name: "Laphroaig Triplewood", distillery: "Laphroaig", region: "Islay", country: "Scotland", age: null, abv: 48, caskType: "Bourbon + Quarter + Oloroso", x: 72, y: 24, intensity: "rich", flavorTags: ["peat", "sherry", "vanilla", "complex"], group: "Beam Suntory" },
+        // Islands
+        { name: "Ledaig 10", distillery: "Ledaig", region: "Islands", country: "Scotland", age: 10, abv: 46.3, caskType: "Bourbon", x: 22, y: 25, intensity: "medium", flavorTags: ["peat", "smoke", "sea salt", "pepper"], group: "Burn Stewart" },
+        { name: "Ledaig 18", distillery: "Ledaig", region: "Islands", country: "Scotland", age: 18, abv: 46.3, caskType: "Sherry", x: 78, y: 22, intensity: "rich", flavorTags: ["peat", "sherry", "smoke", "complex"], group: "Burn Stewart" },
+        // Speyside
+        { name: "Longmorn", distillery: "Longmorn", region: "Speyside", country: "Scotland", age: null, abv: 48, caskType: "Bourbon", x: 28, y: 68, intensity: "medium", flavorTags: ["fruit", "vanilla", "honey", "smooth"], group: "Pernod Ricard" },
+        // Campbeltown
+        { name: "Longrow CV", distillery: "Longrow", region: "Campbeltown", country: "Scotland", age: null, abv: 46, caskType: "Bourbon + Sherry", x: 90, y: 20, intensity: "rich", flavorTags: ["peat", "sherry", "smoke", "complex"], group: "Springbank" },
+        { name: "Longrow Peated", distillery: "Longrow", region: "Campbeltown", country: "Scotland", age: null, abv: 46, caskType: "Bourbon", x: 12, y: 32, intensity: "rich", flavorTags: ["peat", "smoke", "salt", "powerful"], group: "Springbank" },
+        // Highland
+        { name: "Macallan 10 Fine Oak", distillery: "Macallan", region: "Highland", country: "Scotland", age: 10, abv: 40, caskType: "Bourbon + Sherry", x: 58, y: 72, intensity: "light", flavorTags: ["vanilla", "fruit", "light", "fresh"], group: "Edrington" },
+        { name: "Macallan 12", distillery: "Macallan", region: "Highland", country: "Scotland", age: 12, abv: 40, caskType: "Sherry", x: 78, y: 68, intensity: "rich", flavorTags: ["sherry", "dried fruit", "spice", "classic"], group: "Edrington" },
+        { name: "Macallan 12 Sherry", distillery: "Macallan", region: "Highland", country: "Scotland", age: 12, abv: 40, caskType: "Sherry", x: 80, y: 66, intensity: "rich", flavorTags: ["sherry", "rich", "fruit", "oak"], group: "Edrington" },
+        { name: "Macallan 15 Fine Oak", distillery: "Macallan", region: "Highland", country: "Scotland", age: 15, abv: 43, caskType: "Bourbon + Sherry", x: 62, y: 70, intensity: "medium", flavorTags: ["fruit", "oak", "spice", "elegant"], group: "Edrington" },
+        { name: "Macallan 17 Year Fine Oak", distillery: "Macallan", region: "Highland", country: "Scotland", age: 17, abv: 43, caskType: "Bourbon + Sherry", x: 64, y: 68, intensity: "medium", flavorTags: ["fruit", "oak", "complex", "refined"], group: "Edrington" },
+        { name: "Macallan 18 Sherry", distillery: "Macallan", region: "Highland", country: "Scotland", age: 18, abv: 43, caskType: "Sherry", x: 85, y: 64, intensity: "rich", flavorTags: ["sherry", "rich fruit", "chocolate", "premium"], group: "Edrington" },
+        { name: "Macallan Cask Strength Sherry", distillery: "Macallan", region: "Highland", country: "Scotland", age: null, abv: 59, caskType: "Sherry Cask Strength", x: 95, y: 58, intensity: "rich", flavorTags: ["sherry", "powerful", "intense", "spicy"], group: "Edrington" },
+        { name: "Macallan Ed 3", distillery: "Macallan", region: "Highland", country: "Scotland", age: null, abv: 43, caskType: "Sherry", x: 76, y: 70, intensity: "rich", flavorTags: ["sherry", "citrus", "spice", "elegant"], group: "Edrington" },
+        // Others
+        { name: "Monkey Shoulder", distillery: "Monkey Shoulder", region: "Others", country: "Scotland", age: null, abv: 43, caskType: "Blended Malt", x: 32, y: 68, intensity: "medium", flavorTags: ["vanilla", "spice", "malty", "smooth"], group: "William Grant & Sons" },
+        // Highland
+        { name: "Mortlach 16", distillery: "Mortlach", region: "Highland", country: "Scotland", age: 16, abv: 43.4, caskType: "Sherry", x: 72, y: 62, intensity: "rich", flavorTags: ["meaty", "rich", "sherry", "complex"], group: "Diageo" },
+        { name: "Oban 14", distillery: "Oban", region: "Highland", country: "Scotland", age: 14, abv: 43, caskType: "Bourbon + Sherry", x: 48, y: 55, intensity: "medium", flavorTags: ["coastal", "fruity", "honey", "light smoke"], group: "Diageo" },
+        { name: "Oban 18", distillery: "Oban", region: "Highland", country: "Scotland", age: 18, abv: 43, caskType: "Sherry Finish", x: 75, y: 55, intensity: "rich", flavorTags: ["coastal", "sherry", "dried fruit", "complex"], group: "Diageo" },
+        { name: "Old Pulteney 12", distillery: "Old Pulteney", region: "Highland", country: "Scotland", age: 12, abv: 40, caskType: "Bourbon", x: 10, y: 82, intensity: "light", flavorTags: ["sea salt", "citrus", "vanilla", "coastal"], group: "Inver House" },
+        { name: "Old Pulteney 17", distillery: "Old Pulteney", region: "Highland", country: "Scotland", age: 17, abv: 46, caskType: "Sherry", x: 58, y: 78, intensity: "medium", flavorTags: ["sherry", "coastal", "spice", "complex"], group: "Inver House" },
+        { name: "Old Pulteney 18", distillery: "Old Pulteney", region: "Highland", country: "Scotland", age: 18, abv: 46, caskType: "Sherry", x: 65, y: 76, intensity: "medium", flavorTags: ["sherry", "sea salt", "oak", "rich"], group: "Inver House" },
+        { name: "Old Pulteney 21", distillery: "Old Pulteney", region: "Highland", country: "Scotland", age: 21, abv: 46, caskType: "Sherry", x: 72, y: 74, intensity: "rich", flavorTags: ["sherry", "chocolate", "coastal", "luxury"], group: "Inver House" },
+        // Others
+        { name: "Pigs Nose", distillery: "Pigs Nose", region: "Others", country: "Scotland", age: 5, abv: 40, caskType: "Blended", x: 45, y: 74, intensity: "light", flavorTags: ["grain", "light", "sweet", "smooth"], group: "Ian MacLeod" },
+        // Highland
+        { name: "Royal Brackla 12", distillery: "Royal Brackla", region: "Highland", country: "Scotland", age: 12, abv: 40, caskType: "Sherry", x: 55, y: 70, intensity: "medium", flavorTags: ["sherry", "fruit", "spice", "smooth"], group: "Bacardi" },
+        // Islands
+        { name: "Scapa 16", distillery: "Scapa", region: "Islands", country: "Scotland", age: 16, abv: 40, caskType: "Bourbon", x: 20, y: 76, intensity: "medium", flavorTags: ["honey", "fruit", "light", "smooth"], group: "Pernod Ricard" },
+        // Others
+        { name: "Sheep Dip", distillery: "Sheep Dip", region: "Others", country: "Scotland", age: null, abv: 40, caskType: "Blended Malt", x: 28, y: 76, intensity: "light", flavorTags: ["fruit", "honey", "light", "easy"], group: "Independent" },
+        // Islay
+        { name: "Smokehead", distillery: "Smokehead", region: "Islay", country: "Scotland", age: null, abv: 43, caskType: "Bourbon", x: 25, y: 18, intensity: "rich", flavorTags: ["peat", "smoke", "intense", "young"], group: "Ian MacLeod" },
+        // Campbeltown
+        { name: "Springbank 10", distillery: "Springbank", region: "Campbeltown", country: "Scotland", age: 10, abv: 46, caskType: "Bourbon + Sherry", x: 42, y: 30, intensity: "medium", flavorTags: ["light smoke", "salt", "citrus", "complex"], group: "Springbank" },
+        { name: "Springbank 12", distillery: "Springbank", region: "Campbeltown", country: "Scotland", age: 12, abv: 46, caskType: "Bourbon + Sherry", x: 52, y: 28, intensity: "medium", flavorTags: ["smoke", "fruit", "salt", "complex"], group: "Springbank" },
+        { name: "Springbank 12 cask strength", distillery: "Springbank", region: "Campbeltown", country: "Scotland", age: 12, abv: 54, caskType: "Sherry Cask Strength", x: 55, y: 26, intensity: "rich", flavorTags: ["smoke", "sherry", "powerful", "complex"], group: "Springbank" },
+        { name: "Springbank 15", distillery: "Springbank", region: "Campbeltown", country: "Scotland", age: 15, abv: 46, caskType: "Sherry", x: 72, y: 30, intensity: "rich", flavorTags: ["sherry", "smoke", "dried fruit", "rich"], group: "Springbank" },
+        { name: "Springbank 18", distillery: "Springbank", region: "Campbeltown", country: "Scotland", age: 18, abv: 46, caskType: "Sherry", x: 65, y: 32, intensity: "rich", flavorTags: ["sherry", "smoke", "oak", "complex"], group: "Springbank" },
+        // Islands
+        { name: "Talisker 10", distillery: "Talisker", region: "Islands", country: "Scotland", age: 10, abv: 45.8, caskType: "Bourbon", x: 22, y: 24, intensity: "medium", flavorTags: ["pepper", "sea salt", "smoke", "spice"], group: "Diageo" },
+        { name: "Talisker 18", distillery: "Talisker", region: "Islands", country: "Scotland", age: 18, abv: 45.8, caskType: "Sherry", x: 80, y: 32, intensity: "rich", flavorTags: ["sherry", "smoke", "pepper", "complex"], group: "Diageo" },
+        { name: "Talisker 25", distillery: "Talisker", region: "Islands", country: "Scotland", age: 25, abv: 45.8, caskType: "Sherry", x: 92, y: 30, intensity: "rich", flavorTags: ["sherry", "smoke", "oak", "luxury"], group: "Diageo" },
+        { name: "Talisker DE", distillery: "Talisker", region: "Islands", country: "Scotland", age: null, abv: 45.8, caskType: "Sherry Finish", x: 68, y: 35, intensity: "medium", flavorTags: ["sherry", "smoke", "fruit", "spice"], group: "Diageo" },
+        { name: "Talisker North", distillery: "Talisker", region: "Islands", country: "Scotland", age: null, abv: 46, caskType: "Bourbon", x: 15, y: 22, intensity: "rich", flavorTags: ["peat", "smoke", "salt", "powerful"], group: "Diageo" },
+        { name: "Talisker Storm", distillery: "Talisker", region: "Islands", country: "Scotland", age: null, abv: 45.8, caskType: "Bourbon", x: 18, y: 26, intensity: "rich", flavorTags: ["smoke", "pepper", "salt", "intense"], group: "Diageo" },
+        // Speyside
+        { name: "Tamdhu 12", distillery: "Tamdhu", region: "Speyside", country: "Scotland", age: 12, abv: 43, caskType: "Sherry", x: 52, y: 68, intensity: "medium", flavorTags: ["sherry", "fruit", "vanilla", "smooth"], group: "Ian MacLeod" },
+        { name: "Tamdhu CS", distillery: "Tamdhu", region: "Speyside", country: "Scotland", age: null, abv: 58, caskType: "Sherry Cask Strength", x: 90, y: 60, intensity: "rich", flavorTags: ["sherry", "powerful", "spice", "intense"], group: "Ian MacLeod" },
+        // Others
+        { name: "Teachers Highland Cream", distillery: "Teachers", region: "Others", country: "Scotland", age: null, abv: 40, caskType: "Blended", x: 35, y: 45, intensity: "medium", flavorTags: ["smoke", "malt", "smooth", "rich"], group: "Beam Suntory" },
+        // Islands
+        { name: "Tobermory 10", distillery: "Tobermory", region: "Islands", country: "Scotland", age: 10, abv: 46.3, caskType: "Bourbon", x: 30, y: 78, intensity: "light", flavorTags: ["fruit", "floral", "light", "fresh"], group: "Burn Stewart" },
+        // Highland
+        { name: "Tomatin 12", distillery: "Tomatin", region: "Highland", country: "Scotland", age: 12, abv: 43, caskType: "Bourbon + Sherry", x: 62, y: 74, intensity: "light", flavorTags: ["fruit", "vanilla", "light sherry", "smooth"], group: "Independent" },
+        // Speyside
+        { name: "Tomintoul 12", distillery: "Tomintoul", region: "Speyside", country: "Scotland", age: 12, abv: 40, caskType: "Bourbon", x: 8, y: 74, intensity: "light", flavorTags: ["vanilla", "fruit", "light", "gentle"], group: "Angus Dundee" },
+        // Others
+        { name: "Jameson Black Barrel", distillery: "Jameson", region: "Others", country: "Ireland", age: null, abv: 40, caskType: "Blended", x: 58, y: 72, intensity: "medium", flavorTags: ["vanilla", "toasted wood", "spice", "smooth"], group: "Pernod Ricard" },
+        { name: "Hibiki Harmony", distillery: "Hibiki", region: "Others", country: "Japan", age: null, abv: 43, caskType: "Blended", x: 62, y: 70, intensity: "medium", flavorTags: ["honey", "orange", "chocolate", "harmonious"], group: "Beam Suntory" },
+        { name: "Yamazaki 12", distillery: "Yamazaki", region: "Others", country: "Japan", age: 12, abv: 43, caskType: "Bourbon + Sherry + Mizunara", x: 68, y: 68, intensity: "medium", flavorTags: ["peach", "sherry", "mizunara", "fruity"], group: "Beam Suntory" }
+        ];
 
-    <h2>美国威士忌</h2>
-    <div class="table-container">
-        <table>
-            <tr>
-                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
-                <th>1792 Barton</th>
-                <th>Booker's<br><span class="distillery-cn">布克</span></th>
-                <th>Buffalo Trace<br><span class="distillery-cn">水牛足迹</span></th>
-                <th>Elijah Craig<br><span class="distillery-cn">以利亚克雷格</span></th>
-                <th>Evan Williams<br><span class="distillery-cn">埃文威廉姆斯</span></th>
-                <th>Four Roses<br><span class="distillery-cn">四玫瑰</span></th>
-                <th>Heaven Hill</th>
-                <th><a href="https://en.wikipedia.org/wiki/Jack_Daniel's">Jack Daniel's<br><span class="distillery-cn">杰克丹尼</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Jim_Beam">Jim Beam<br><span class="distillery-cn">占边</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Maker's_Mark">Maker's Mark<br><span class="distillery-cn">美格</span></a></th>
-                <th>Michter's<br><span class="distillery-cn">酩帝诗</span></th>
-                <th>Old Forester<br><span class="distillery-cn">老林务官</span></th>
-                <th>Pappy Van Winkle<br><span class="distillery-cn">帕皮</span></th>
-                <th>Sazerac<br><span class="distillery-cn">萨泽拉克</span></th>
-                <th>WhistlePig<br><span class="distillery-cn">口哨猪</span></th>
-                <th>Wild Turkey<br><span class="distillery-cn">威凤凰</span></th>
-                <th>Woodford Reserve<br><span class="distillery-cn">伍德福德珍藏</span></th>
-            </tr>
-            <tr>
-                <td><strong>集团</strong></td>
-                <td>Sazerac</td>
-                <td>Beam Suntory</td>
-                <td>Sazerac</td>
-                <td>Heaven Hill</td>
-                <td>Heaven Hill</td>
-                <td>Kirin</td>
-                <td>Heaven Hill</td>
-                <td>Brown-Forman</td>
-                <td>Beam Suntory</td>
-                <td>Beam Suntory</td>
-                <td>Michter's</td>
-                <td>Brown-Forman</td>
-                <td>Sazerac</td>
-                <td>Sazerac</td>
-                <td>WhistlePig</td>
-                <td>Campari</td>
-                <td>Brown-Forman</td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Kentucky_bourbon">Kentucky</a></strong></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>1792 12 Year Old 1792 12年 <span class="award">2024 WWA最佳波本</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Booker's 2024 Release 布克2024</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Buffalo Trace Bourbon 水牛足迹</li>
-                        <li>Buffalo Trace Antique Collection 水牛足迹古董收藏</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Elijah Craig Small Batch 以利亚小批量</li>
-                        <li>Elijah Craig Barrel Proof 以利亚桶强 <span class="award">2024 SFWSC最佳纯波本</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Evan Williams Black Label 埃文黑标</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Four Roses Yellow Label 四玫瑰黄牌</li>
-                        <li>Four Roses Single Barrel 四玫瑰单桶 <span class="award">2024 WWA最佳单桶波本</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Rittenhouse Rye 100 瑞顿豪斯黑麦</li>
-                        <li>Pikesville Rye 派克斯维尔黑麦</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Jim Beam White Label 占边白标</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Maker's Mark 美格</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Michter's 10 Rye 酩帝诗10年黑麦</li>
-                        <li>Michter's 20 Bourbon 酩帝诗20年波本</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Old Forester 1920 老林务官1920</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Pappy Van Winkle 15 帕皮15年</li>
-                        <li>Pappy Van Winkle 20 帕皮20年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>George T. Stagg 乔治斯塔格</li>
-                        <li>Sazerac Rye 6 萨泽拉克黑麦6年</li>
-                        <li>William Larue Weller 威廉罗利</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Wild Turkey 101 威凤凰101</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Woodford Reserve 伍德福德珍藏</li>
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Tennessee_whiskey">Tennessee</a></strong></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Jack Daniel's Old No.7 杰克丹尼7号</li>
-                        <li>Jack Daniel's Gentleman Jack 杰克丹尼绅士</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Vermont">Vermont</a></strong></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>WhistlePig 10 Rye 口哨猪10年黑麦</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
-    </div>
+        let selectedWhisky = null;
+        let activeRegions = new Set(['Highland', 'Speyside', 'Islay', 'Islands', 'Lowland', 'Campbeltown', 'Others']);
 
-    <h2>日本威士忌</h2>
-    <div class="table-container">
-        <table>
-            <tr>
-                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
-                <th><a href="https://en.wikipedia.org/wiki/Hakushu_distillery">Hakushu<br><span class="distillery-cn">白州</span></a></th>
-                <th>Hanyu<br><span class="distillery-cn">羽生</span></th>
-                <th><a href="https://en.wikipedia.org/wiki/Hibiki_(whisky)">Hibiki<br><span class="distillery-cn">响</span></a></th>
-                <th>Kakubin<br><span class="distillery-cn">角瓶</span></th>
-                <th>Karuizawa<br><span class="distillery-cn">轻井泽</span></th>
-                <th>Kyoto<br><span class="distillery-cn">京都</span></th>
-                <th>Matsui<br><span class="distillery-cn">松井</span></th>
-                <th>Miyagikyo<br><span class="distillery-cn">宫城峡</span></th>
-                <th><a href="https://en.wikipedia.org/wiki/Nikka_Whisky_Distilling">Nikka<br><span class="distillery-cn">一甲</span></a></th>
-                <th>Toki<br><span class="distillery-cn">季</span></th>
-                <th><a href="https://en.wikipedia.org/wiki/Yamazaki_distillery">Yamazaki<br><span class="distillery-cn">山崎</span></a></th>
-                <th><a href="https://en.wikipedia.org/wiki/Yoichi_distillery">Yoichi<br><span class="distillery-cn">余市</span></a></th>
-            </tr>
-            <tr>
-                <td><strong>集团</strong></td>
-                <td>Suntory</td>
-                <td>Hanyu Distillery</td>
-                <td>Suntory</td>
-                <td>Suntory</td>
-                <td>Karuizawa Distillery</td>
-                <td>Kyoto Whisky</td>
-                <td>Matsui Whisky</td>
-                <td>Nikka</td>
-                <td>Nikka</td>
-                <td>Suntory</td>
-                <td>Suntory</td>
-                <td>Nikka</td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Japanese_whisky">Japan</a></strong></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Hakushu 1973 白州1973</li>
-                        <li>Hakushu 12 白州12年</li>
-                        <li>Hakushu 18 白州18年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Hanyu Ichiro's Malt Card Series 羽生扑克牌 <span class="award">关厂收藏传奇</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Hibiki Harmony 响和风</li>
-                        <li>Hibiki Master's Select 响大师精选</li>
-                        <li>Hibiki 21 响21年</li>
-                        <li>Hibiki 30 响30年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Suntory Kakubin 角瓶</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Karuizawa (Various) 轻井泽 <span class="award">日本麦卡伦</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Kyoto KURO-OBI 京都黑带 <span class="award">2024日本最佳调和</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Matsui Sakura Cask 松井樱花桶 <span class="award">2024日本最佳单一麦芽</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Miyagikyo Single Malt 宫城峡单一麦芽</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Nikka From The Barrel 一甲原酒</li>
-                        <li>Nikka Days 一甲Days</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Suntory Toki 季</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Yamazaki 1923 山崎1923</li>
-                        <li>Yamazaki 12 山崎12年</li>
-                        <li>Yamazaki 18 山崎18年</li>
-                        <li>Yamazaki 25 山崎25年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Yoichi Single Malt 余市单一麦芽</li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
-    </div>
+        // Initialize
+        function init() {
+            renderMatrix();
+            setupMapInteractions();
 
-    <h2>台湾威士忌</h2>
-    <div class="table-container">
-        <table>
-            <tr>
-                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
-                <th><a href="https://en.wikipedia.org/wiki/Kavalan_distillery">Kavalan<br><span class="distillery-cn">噶玛兰</span></a></th>
-                <th>Nantou<br><span class="distillery-cn">南投</span></th>
-                <th>Yushan<br><span class="distillery-cn">玉山</span></th>
-            </tr>
-            <tr>
-                <td><strong>集团</strong></td>
-                <td>King Car</td>
-                <td>TTL</td>
-                <td>TTL</td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Taiwan">Taiwan</a></strong></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Kavalan Cask Strength 噶玛兰桶强</li>
-                        <li>Kavalan Fino Sherry Cask 噶玛兰Fino雪莉桶 <span class="award">2025 IWC世界冠军97.04分</span></li>
-                        <li>Kavalan Vinho Barrique 噶玛兰Vinho <span class="award">2015 WWA最佳单一麦芽</span></li>
-                        <li>Kavalan Triple Sherry 噶玛兰三雪莉桶</li>
-                        <li>Kavalan Bourbon Cask 噶玛兰波本桶</li>
-                        <li>Kavalan Peaty Cask 噶玛兰泥煤桶 <span class="award">2024 TWSC最佳单一麦芽</span></li>
-                        <li>Kavalan Select No.1 噶玛兰珍选一号</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Omar Sherry Cask 南投Omar雪莉桶</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Yushan Sherry Cask 玉山雪莉桶</li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
-    </div>
+            // 初始加载时，所有被选中的区域显示蓝色
+            const checkboxes = document.querySelectorAll('.region-list input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    activeRegions.add(cb.value);
+                }
+            });
+            document.querySelectorAll('.map-region').forEach(m => {
+                if (activeRegions.has(m.dataset.region)) {
+                    m.classList.add('active');
+                }
+            });
+        }
 
-    <h2>印度威士忌</h2>
-    <div class="table-container">
-        <table>
-            <tr>
-                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
-                <th>Amrut<br><span class="distillery-cn">阿姆鲁特</span></th>
-                <th>Indri<br><span class="distillery-cn">因德里</span></th>
-                <th>Paul John<br><span class="distillery-cn">保罗约翰</span></th>
-            </tr>
-            <tr>
-                <td><strong>集团</strong></td>
-                <td>Amrut Distilleries</td>
-                <td>Piccadily Distilleries</td>
-                <td>John Distilleries</td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Indian_whisky">India</a></strong></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Amrut Fusion 阿姆鲁特融合</li>
-                        <li>Amrut Single Malt 阿姆鲁特单一麦芽</li>
-                        <li>Amrut Peated 阿姆鲁特泥煤</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Indri Diwali 因德里排灯节 <span class="award">2023 Whiskies of the World最佳展示</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Paul John Nirvana 保罗约翰涅槃 <span class="award">SIP Awards 2024双金奖</span></li>
-                        <li>Paul John Bold 保罗约翰勇气</li>
-                        <li>Paul John Oloroso 保罗约翰Oloroso <span class="award">IWSC 2024金奖</span></li>
-                        <li>Paul John Brilliance 保罗约翰光辉 <span class="award">IWSC 2024最佳展示</span></li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
-    </div>
+        // Render matrix points
+        function renderMatrix() {
+            const chart = document.getElementById('matrixChart');
 
-    <h2>其他新兴产区威士忌</h2>
-    <div class="table-container">
-        <table>
-            <tr>
-                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
-                <th>Coburns<br><span class="distillery-cn">科伯恩斯</span></th>
-                <th>Mackmyra<br><span class="distillery-cn">麦克米拉</span></th>
-                <th>Milk & Honey<br><span class="distillery-cn">奶与蜜</span></th>
-                <th>Starward<br><span class="distillery-cn">斯塔沃德</span></th>
-                <th>Sullivans Cove<br><span class="distillery-cn">苏利文湾</span></th>
-                <th>Teerenpeli<br><span class="distillery-cn">特伦佩利</span></th>
-                <th>The English<br><span class="distillery-cn">英格兰</span></th>
-            </tr>
-            <tr>
-                <td><strong>集团</strong></td>
-                <td>Coburns Distilling</td>
-                <td>Mackmyra Svensk Whisky</td>
-                <td>Milk & Honey Distillery</td>
-                <td>New World Whisky Distillery</td>
-                <td>Sullivans Cove Distillery</td>
-                <td>Teerenpeli Distillery</td>
-                <td>The English Whisky Co.</td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Australian_whisky">Australia</a></strong></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Coburns Mythical Gods 科伯恩斯神话 <span class="award">2024 Whisky Bible 4项Liquid Gold</span></li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Starward Nova 斯塔沃德新星</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Sullivans Cove French Oak 苏利文湾法国橡木</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Milk_%26_Honey_Distillery">Israel</a></strong></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Milk & Honey Sherry Cask 奶与蜜雪莉桶 <span class="award">2023 WWA世界最佳单一麦芽</span></li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Mackmyra">Sweden</a></strong></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Mackmyra Svensk Ek 麦克米拉瑞典橡木</li>
-                    </ul>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Teerenpeli">Finland</a></strong></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Teerenpeli Kulo 特伦佩利库洛 <span class="award">2024 IWSC全球年度生产商</span></li>
-                    </ul>
-                </td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/English_whisky">England</a></strong></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>The English Sherry Cask 英格兰雪莉桶 <span class="award">2024 WWA世界最佳单一麦芽</span></li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
-    </div>
+            whiskyData.forEach((whisky, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'whisky-point-wrapper';
+                wrapper.style.left = `${whisky.x}%`;
+                wrapper.style.top = `${whisky.y}%`;
+                wrapper.dataset.index = index;
+                wrapper.dataset.region = whisky.region || whisky.country;
 
-    <h2>调和威士忌</h2>
-    <div class="table-container">
-        <table>
-            <tr>
-                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
-                <th>Ballantine's<br><span class="distillery-cn">百龄坛</span></th>
-                <th>Chivas Regal<br><span class="distillery-cn">芝华士</span></th>
-                <th>Compass Box<br><span class="distillery-cn">罗盘针</span></th>
-                <th>Cutty Sark<br><span class="distillery-cn">顺风</span></th>
-                <th>Dewar's<br><span class="distillery-cn">帝王</span></th>
-                <th>Famous Grouse<br><span class="distillery-cn">威雀</span></th>
-                <th>Grant's<br><span class="distillery-cn">格兰</span></th>
-                <th>J&B</th>
-                <th>Johnnie Walker<br><span class="distillery-cn">尊尼获加</span></th>
-                <th><a href="https://en.wikipedia.org/wiki/Monkey_Shoulder">Monkey Shoulder<br><span class="distillery-cn">三只猴子</span></a></th>
-                <th>Naked Malt<br><span class="distillery-cn">裸雀</span></th>
-                <th>Royal Salute<br><span class="distillery-cn">皇家礼炮</span></th>
-                <th>Teacher's<br><span class="distillery-cn">铁骑士</span></th>
-            </tr>
-            <tr>
-                <td><strong>集团</strong></td>
-                <td>Pernod Ricard</td>
-                <td>Pernod Ricard</td>
-                <td>Compass Box</td>
-                <td>Berry Bros. & Rudd</td>
-                <td>Bacardi</td>
-                <td>Edrington</td>
-                <td>William Grant & Sons</td>
-                <td>Diageo</td>
-                <td>Diageo</td>
-                <td>William Grant & Sons</td>
-                <td>William Grant & Sons</td>
-                <td>Chivas Brothers</td>
-                <td>Beam Suntory</td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Blended_whisky">Blend</a></strong></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Ballantine's 17 百龄坛17年 <span class="award">2024 WWA最佳调和</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Chivas 12 芝华士12年</li>
-                        <li>Chivas 18 芝华士18年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Compass Box Artist Blend 罗盘针艺术家</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Cutty Sark 顺风</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Dewar's 12 帝王12年</li>
-                        <li>Dewar's 21 帝王21年</li>
-                        <li>Dewar's Double Double 32 帝王双重双32年 <span class="award">2023 WWA最佳调和麦芽</span></li>
-                        <li>Dewar's Double Double 37 帝王双重双37年 <span class="award">2024 WWA最佳调和麦芽</span></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Famous Grouse 威雀</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Grant's 格兰</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>J&B Rare J&B</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Johnnie Walker Black Label 黑方</li>
-                        <li>Johnnie Walker Green Label 绿方</li>
-                        <li>Johnnie Walker Blue Label 蓝方</li>
-                        <li>Johnnie Walker Ghost and Rare 消逝酒厂</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Monkey Shoulder 三只猴子</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Naked Malt 裸雀</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Royal Salute 21 皇家礼炮21年</li>
-                        <li>Royal Salute 38 Stone of Destiny 皇家礼炮38年命运之石</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Teacher's Highland Cream 铁骑士</li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
-    </div>
+                const dot = document.createElement('div');
+                dot.className = `whisky-dot ${whisky.intensity}`;
 
-    <h2>独立装瓶商 Independent Bottlers</h2>
-    <div class="table-container">
-        <table>
-            <tr>
-                <th class="corner-cell"><div class="diag-line"></div><div class="distillery-label">酒厂</div><div class="region-label">产区</div></th>
-                <th>Berry Bros. & Rudd<br><span class="distillery-cn">贝瑞兄弟</span></th>
-                <th>Cadenhead's<br><span class="distillery-cn">凯德汉</span></th>
-                <th>Douglas Laing<br><span class="distillery-cn">道格拉斯梁</span></th>
-                <th>Dramfool</th>
-                <th>Gordon & MacPhail<br><span class="distillery-cn">高登麦克菲尔</span></th>
-                <th>Ian MacLeod<br><span class="distillery-cn">烟头</span></th>
-                <th>North Star Spirits<br><span class="distillery-cn">北极星</span></th>
-                <th>Signatory Vintage<br><span class="distillery-cn">圣弗力</span></th>
-                <th>TBWC<br><span class="distillery-cn">漫画标</span></th>
-                <th>The Whisky Exchange<br><span class="distillery-cn">TWE</span></th>
-                <th>Thompson Bros<br><span class="distillery-cn">汤普森兄弟</span></th>
-            </tr>
-            <tr>
-                <td><strong>集团</strong></td>
-                <td>Berry Bros. & Rudd</td>
-                <td>Cadenhead's</td>
-                <td>Douglas Laing</td>
-                <td>Dramfool</td>
-                <td>Gordon & MacPhail</td>
-                <td>Ian MacLeod</td>
-                <td>North Star Spirits</td>
-                <td>Signatory Vintage</td>
-                <td>Atom Brands</td>
-                <td>Speciality Drinks</td>
-                <td>Thompson Bros</td>
-            </tr>
-            <tr>
-                <td><strong><a href="https://en.wikipedia.org/wiki/Independent_bottler">IB</a></strong></td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Berry Bros. Blue Spirits 贝瑞兄弟蓝魂系列</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Cadenhead's Authentic Collection 凯德汉真选系列</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Douglas Laing Old Particular 道格拉斯梁老特性系列</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Dramfool Single Casks Dramfool单桶</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Gordon & MacPhail Mortlach 15 G&M慕赫15年</li>
-                        <li>Gordon & MacPhail Caol Ila 12 G&M卡尔里拉12年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Smokehead Series 烟头系列</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>North Star Single Casks 北极星单桶</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Signatory Secret Speyside 2005 圣弗力神秘斯佩塞</li>
-                        <li>Signatory Benrinnes 15 圣弗力本利林15年</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>TBWC Comic Label Series 漫画标系列</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Elements of Islay 艾雷元素</li>
-                        <li>Single Malts of Scotland 苏格兰单一麦芽</li>
-                    </ul>
-                </td>
-                <td>
-                    <ul class="whisky-list">
-                        <li>Thompson Bros Blended Malt 汤普森兄弟调和麦芽 <span class="award">2024最佳独立装瓶商</span></li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
-    </div>
+                const label = document.createElement('span');
+                label.className = 'whisky-label';
+                label.textContent = whisky.name;
 
-    <div class="summary">
-        <h2>数据汇总</h2>
-        <table class="summary-table">
-            <tr>
-                <th>国家/地区</th>
-                <th>表格数量</th>
-                <th>酒厂总数</th>
-                <th>酒款总数</th>
-            </tr>
-            <tr>
-                <td>苏格兰威士忌</td>
-                <td>1个表格 (合并所有产区)</td>
-                <td>30家</td>
-                <td>约82款</td>
-            </tr>
-            <tr>
-                <td>爱尔兰威士忌</td>
-                <td>1个表格</td>
-                <td>11家</td>
-                <td>约18款</td>
-            </tr>
-            <tr>
-                <td>美国威士忌</td>
-                <td>1个表格 (合并所有产区)</td>
-                <td>17家</td>
-                <td>约28款</td>
-            </tr>
-            <tr>
-                <td>日本威士忌</td>
-                <td>1个表格</td>
-                <td>12家</td>
-                <td>约24款</td>
-            </tr>
-            <tr>
-                <td>台湾威士忌</td>
-                <td>1个表格</td>
-                <td>3家</td>
-                <td>约10款</td>
-            </tr>
-            <tr>
-                <td>印度威士忌</td>
-                <td>1个表格</td>
-                <td>3家</td>
-                <td>约10款</td>
-            </tr>
-            <tr>
-                <td>其他新兴产区</td>
-                <td>1个表格</td>
-                <td>7家</td>
-                <td>约7款</td>
-            </tr>
-            <tr>
-                <td>调和威士忌</td>
-                <td>1个表格</td>
-                <td>13家</td>
-                <td>约20款</td>
-            </tr>
-            <tr>
-                <td>独立装瓶商</td>
-                <td>1个表格</td>
-                <td>11家</td>
-                <td>约14款</td>
-            </tr>
-            <tr>
-                <td><strong>总计</strong></td>
-                <td><strong>9个表格</strong></td>
-                <td><strong>约107家酒厂</strong></td>
-                <td><strong>约213款威士忌</strong></td>
-            </tr>
-        </table>
-    </div>
+                if (whisky.x > 70) {
+                    label.classList.add('left');
+                }
 
+                wrapper.appendChild(dot);
+                wrapper.appendChild(label);
+                wrapper.addEventListener('click', () => selectWhisky(index));
+
+                // Hover effect: highlight same region, dim others
+                wrapper.addEventListener('mouseenter', () => {
+                    const targetRegion = whisky.region || whisky.country;
+                    document.querySelectorAll('.whisky-point-wrapper').forEach(w => {
+                        const wRegion = w.dataset.region;
+                        if (wRegion !== targetRegion) {
+                            w.classList.add('dimmed');
+                        }
+                    });
+                });
+
+                wrapper.addEventListener('mouseleave', () => {
+                    // 恢复筛选状态，而不是简单地移除所有dimmed
+                    applyFilters();
+                });
+
+                chart.appendChild(wrapper);
+            });
+        }
+
+        // Select a whisky
+        function selectWhisky(index) {
+            selectedWhisky = index;
+            const whisky = whiskyData[index];
+
+            document.querySelectorAll('.whisky-point-wrapper').forEach((w, i) => {
+                w.classList.toggle('selected', i === index);
+            });
+
+            const content = document.getElementById('detailContent');
+            content.classList.add('active');
+
+            const wordCloudHTML = generateWordCloud(whisky.flavorTags);
+
+            content.innerHTML = `
+                <div class="detail-whisky-name">${whisky.name}</div>
+                <div class="detail-subtitle">
+                    ${whisky.distillery} · ${whisky.caskType === 'Blended' ? 'Blended' : (whisky.country === 'Scotland' ? 'Scotland · ' + whisky.region : whisky.country)}
+                </div>
+
+                <div class="detail-info-grid">
+                    <div class="detail-info-label">年份</div>
+                    <div class="detail-info-value">${whisky.age ? whisky.age + ' 年' : 'N/A'}</div>
+
+                    <div class="detail-info-label">酒精度</div>
+                    <div class="detail-info-value">${whisky.abv ? whisky.abv + '%' : 'N/A'}</div>
+
+                    <div class="detail-info-label">桶型/处理方式</div>
+                    <div class="detail-info-value">${whisky.caskType}</div>
+
+                    <div class="detail-info-label">酒厂</div>
+                    <div class="detail-info-value">${whisky.distillery}</div>
+
+                    <div class="detail-info-label">集团</div>
+                    <div class="detail-info-value">${whisky.group}</div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="word-cloud">
+                        ${wordCloudHTML}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Generate word cloud HTML
+        function generateWordCloud(tags) {
+            const sizes = ['word-large', 'word-medium', 'word-small'];
+            return tags.map((tag, i) => {
+                const sizeClass = sizes[i % sizes.length];
+                return `<span class="word ${sizeClass}">${tag}</span>`;
+            }).join('');
+        }
+
+        // Update region filter
+        function updateRegionFilter() {
+            const checkboxes = document.querySelectorAll('.region-list input[type="checkbox"]');
+            activeRegions.clear();
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    activeRegions.add(cb.value);
+                }
+            });
+
+            // 同步地图高亮状态：被选中的区域显示蓝色
+            document.querySelectorAll('.map-region').forEach(m => {
+                if (activeRegions.has(m.dataset.region)) {
+                    m.classList.add('active');
+                } else {
+                    m.classList.remove('active');
+                }
+            });
+
+            applyFilters();
+        }
+
+        // Apply search
+        function applySearch() {
+            applyFilters();
+        }
+
+        // Reset all filters
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.region-list input[type="checkbox"]').forEach(cb => {
+                cb.checked = true;
+            });
+            activeRegions = new Set(['Highland', 'Speyside', 'Islay', 'Islands', 'Lowland', 'Campbeltown', 'Others']);
+
+            // 全选状态下，所有地图区域都显示为蓝色
+            document.querySelectorAll('.map-region').forEach(m => {
+                m.classList.add('active');
+            });
+
+            // Hide detail panel
+            document.getElementById('detailContent').classList.remove('active');
+
+            applyFilters();
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const points = document.querySelectorAll('.whisky-point-wrapper');
+
+            points.forEach((wrapper, index) => {
+                const whisky = whiskyData[index];
+                const whiskyRegion = whisky.region || whisky.country;
+
+                const matchesSearch = !query ||
+                    whisky.name.toLowerCase().includes(query) ||
+                    whisky.distillery.toLowerCase().includes(query);
+
+                const matchesRegion = activeRegions.has(whiskyRegion);
+
+                // 如果有搜索词，优先显示搜索结果（忽略产区筛选）
+                // 如果没有搜索词，按照产区筛选显示
+                if (matchesSearch && (query || matchesRegion)) {
+                    wrapper.classList.remove('dimmed');
+                } else {
+                    wrapper.classList.add('dimmed');
+                }
+            });
+        }
+
+        // Setup map interactions
+        function setupMapInteractions() {
+            const tooltip = document.getElementById('mapTooltip');
+            const mapPanel = document.querySelector('.map-panel');
+
+            document.querySelectorAll('.map-region').forEach(region => {
+                // Mouse enter - show tooltip
+                region.addEventListener('mouseenter', function(e) {
+                    const regionName = this.dataset.region;
+                    tooltip.textContent = regionName;
+                    tooltip.style.display = 'block';
+                });
+
+                // Mouse move - update tooltip position
+                region.addEventListener('mousemove', function(e) {
+                    const rect = mapPanel.getBoundingClientRect();
+                    tooltip.style.left = (e.clientX - rect.left + 10) + 'px';
+                    tooltip.style.top = (e.clientY - rect.top - 25) + 'px';
+                });
+
+                // Mouse leave - hide tooltip
+                region.addEventListener('mouseleave', function() {
+                    tooltip.style.display = 'none';
+                });
+
+                region.addEventListener('click', function() {
+                    const regionName = this.dataset.region;
+                    const isActive = this.classList.contains('active');
+
+                    // 切换当前产区的选中状态
+                    const checkbox = document.querySelector(`.region-list input[type="checkbox"][value="${regionName}"]`);
+
+                    if (isActive) {
+                        // 如果已经是蓝色，取消选中
+                        checkbox.checked = false;
+                        this.classList.remove('active');
+                        activeRegions.delete(regionName);
+                    } else {
+                        // 如果未选中，选中它
+                        checkbox.checked = true;
+                        this.classList.add('active');
+                        activeRegions.add(regionName);
+                    }
+
+                    applyFilters();
+                });
+            });
+        }
+
+        // Real-time search
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+        // Initialize on load
+        init();
+    </script>
 </body>
 </html>
